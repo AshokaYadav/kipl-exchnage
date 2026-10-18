@@ -6,6 +6,7 @@ import { Mail, Menu, Phone, X } from "lucide-react";
 import { Logo } from "@/components/ui/logo";
 import { siteConfig } from "@/config/site";
 import { getToken } from "@/lib/session";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
 
 const links = [
   { label: "Home", href: "#home" },
@@ -38,14 +39,14 @@ export function Navbar() {
       </div>
 
       {/* Main nav */}
-      <nav className="border-b border-slate-200/70 bg-white/90 backdrop-blur">
+      <nav className="border-b border-slate-200/70 bg-white/90 backdrop-blur dark:border-white/10 dark:bg-slate-950/90">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4">
           <Logo />
 
           <ul className="hidden items-center gap-8 md:flex">
             {links.map((l) => (
               <li key={l.href}>
-                <a href={l.href} className="text-sm font-medium text-slate-600 transition hover:text-brand-600">
+                <a href={l.href} className="text-sm font-medium text-slate-600 transition hover:text-brand-600 dark:text-slate-300 dark:hover:text-white">
                   {l.label}
                 </a>
               </li>
@@ -53,13 +54,14 @@ export function Navbar() {
           </ul>
 
           <div className="hidden items-center gap-3 md:flex">
+            <ThemeToggle />
             {loggedIn ? (
               <Link href="/dashboard" className="rounded-xl bg-brand-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-brand-700">
                 Go to Dashboard
               </Link>
             ) : (
               <>
-                <Link href="/login" className="rounded-xl px-4 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-100">
+                <Link href="/login" className="rounded-xl px-4 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-white/10">
                   Login
                 </Link>
                 <Link href="/register" className="rounded-xl bg-brand-600 px-5 py-2.5 text-sm font-semibold text-white shadow-md shadow-brand-600/25 hover:bg-brand-700">
@@ -69,20 +71,23 @@ export function Navbar() {
             )}
           </div>
 
-          <button
-            className="grid size-10 place-items-center rounded-lg text-slate-700 hover:bg-slate-100 md:hidden"
-            onClick={() => setOpen((o) => !o)}
-            aria-label="Toggle menu"
-          >
-            {open ? <X className="size-5" /> : <Menu className="size-5" />}
-          </button>
+          <div className="flex items-center gap-2 md:hidden">
+            <ThemeToggle />
+            <button
+              className="grid size-10 place-items-center rounded-lg text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-white/10"
+              onClick={() => setOpen((o) => !o)}
+              aria-label="Toggle menu"
+            >
+              {open ? <X className="size-5" /> : <Menu className="size-5" />}
+            </button>
+          </div>
         </div>
 
         {/* Mobile menu */}
         {open && (
-          <div className="border-t border-slate-200 bg-white px-4 pb-4 md:hidden">
+          <div className="border-t border-slate-200 bg-white px-4 pb-4 dark:border-white/10 dark:bg-slate-950 md:hidden">
             {links.map((l) => (
-              <a key={l.href} href={l.href} onClick={() => setOpen(false)} className="block py-3 text-sm font-medium text-slate-700">
+              <a key={l.href} href={l.href} onClick={() => setOpen(false)} className="block py-3 text-sm font-medium text-slate-700 dark:text-slate-200">
                 {l.label}
               </a>
             ))}
@@ -93,7 +98,7 @@ export function Navbar() {
                 </Link>
               ) : (
                 <>
-                  <Link href="/login" className="rounded-xl border border-slate-300 py-2.5 text-center text-sm font-semibold">
+                  <Link href="/login" className="rounded-xl border border-slate-300 py-2.5 text-center text-sm font-semibold dark:border-white/20 dark:text-white">
                     Login
                   </Link>
                   <Link href="/register" className="rounded-xl bg-brand-600 py-2.5 text-center text-sm font-semibold text-white">

@@ -19,7 +19,7 @@ export function TopbarLayout({ user, children }: { user: AppUser | null; childre
   return (
     <div className="min-h-screen">
       <header className="sticky top-0 z-30 border-b border-slate-200 bg-white dark:border-white/10 dark:bg-slate-950">
-        <div className="mx-auto flex h-16 max-w-7xl items-center gap-3 px-4">
+        <div className="mx-auto flex h-16 max-w-9xl items-center gap-3 px-4">
           <button className="grid size-10 place-items-center rounded-lg hover:bg-slate-100 dark:hover:bg-white/10 xl:hidden" onClick={() => setOpen((o) => !o)} aria-label="Toggle menu">
             {open ? <X className="size-5" /> : <Menu className="size-5" />}
           </button>
@@ -33,7 +33,8 @@ export function TopbarLayout({ user, children }: { user: AppUser | null; childre
 
         {/* Horizontal nav (desktop) */}
         <nav className="hidden border-t border-slate-100 bg-brand-950 dark:border-white/10 xl:block">
-          <ul className="mx-auto flex max-w-7xl items-center gap-1 overflow-x-auto px-4">
+          <ul className="mx-auto flex  items-center gap-1 overflow-x-auto px-4">
+            {/* max-w-7xl */}
             {dashboardNav.map((item) => {
               const active = pathname === item.href;
               return (
@@ -74,8 +75,9 @@ export function TopbarLayout({ user, children }: { user: AppUser | null; childre
           </nav>
         )}
       </header>
+      {/* max-w-7xl  */}
 
-      <main className="mx-auto max-w-7xl p-4 sm:p-6">{children}</main>
+      <main className="mx-auto p-4 sm:p-6">{children}</main>
     </div>
   );
 }

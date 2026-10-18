@@ -47,7 +47,7 @@ export default function RegisterPage() {
       footer={
         <>
           Already have an account?{" "}
-          <Link href="/login" className="font-semibold text-brand-600 hover:underline">
+          <Link href="/login" className="font-semibold text-brand-600 hover:underline dark:text-brand-400">
             Login
           </Link>
         </>
@@ -91,7 +91,7 @@ export default function RegisterPage() {
           <Button type="submit" className="w-full" loading={createUser.isPending || sendOtp.isPending} disabled={!valid}>
             Sign Up &amp; Get OTP
           </Button>
-          <p className="text-center text-xs text-slate-500">
+          <p className="text-center text-xs text-slate-500 dark:text-slate-400">
             By signing up you agree to our{" "}
             <Link href="/terms" className="underline">Terms</Link> and{" "}
             <Link href="/privacy-policy" className="underline">Privacy Policy</Link>.

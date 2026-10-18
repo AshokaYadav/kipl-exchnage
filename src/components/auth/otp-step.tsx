@@ -73,12 +73,12 @@ export function OtpStep({
       }}
       className="space-y-6"
     >
-      <button type="button" onClick={onBack} className="flex items-center gap-1.5 text-sm font-medium text-slate-600 hover:text-brand-600">
+      <button type="button" onClick={onBack} className="flex items-center gap-1.5 text-sm font-medium text-slate-600 hover:text-brand-600 dark:text-slate-400 dark:hover:text-brand-400">
         <ArrowLeft className="size-4" /> Change number
       </button>
 
-      <p className="text-sm text-slate-600">
-        OTP sent to <span className="font-semibold text-slate-900">+91 {mobile}</span>
+      <p className="text-sm text-slate-600 dark:text-slate-400">
+        OTP sent to <span className="font-semibold text-slate-900 dark:text-white">+91 {mobile}</span>
       </p>
 
       <div className="flex justify-between gap-2">
@@ -96,7 +96,7 @@ export function OtpStep({
             onKeyDown={(e) => onKey(i, e)}
             onPaste={onPaste}
             aria-label={`OTP digit ${i + 1}`}
-            className="size-12 rounded-xl border border-slate-300 bg-white text-center text-lg font-bold outline-none transition focus:border-brand-500 focus:ring-4 focus:ring-brand-100 sm:size-14"
+            className="size-12 rounded-xl border border-slate-300 bg-white text-center text-lg font-bold outline-none transition focus:border-brand-500 focus:ring-4 focus:ring-brand-100 dark:border-white/15 dark:bg-slate-900 dark:text-white dark:focus:ring-brand-500/20 sm:size-14"
           />
         ))}
       </div>
@@ -105,11 +105,11 @@ export function OtpStep({
         Verify &amp; Continue
       </Button>
 
-      <p className="text-center text-sm text-slate-600">
+      <p className="text-center text-sm text-slate-600 dark:text-slate-400">
         {timer > 0 ? (
           <>Resend OTP in <span className="font-semibold">{timer}s</span></>
         ) : (
-          <button type="button" disabled={resend.isPending} onClick={() => resend.mutate(mobile)} className="font-semibold text-brand-600 hover:underline disabled:opacity-50">
+          <button type="button" disabled={resend.isPending} onClick={() => resend.mutate(mobile)} className="font-semibold text-brand-600 hover:underline disabled:opacity-50 dark:text-brand-400">
             {resend.isPending ? "Sending..." : "Resend OTP"}
           </button>
         )}

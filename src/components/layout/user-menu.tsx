@@ -1,32 +1,15 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { ChevronDown, LogOut, Moon, PanelLeft, PanelTop, Sun, UserCircle } from "lucide-react";
+import { ChevronDown, LogOut, PanelLeft, PanelTop, UserCircle } from "lucide-react";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
 import Link from "next/link";
 import { useLogout } from "@/hooks/useAuth";
 import { useLayoutMode } from "@/providers/layout-provider";
-import { useTheme } from "@/providers/theme-provider";
 import type { AppUser } from "@/lib/session";
 import { cn } from "@/lib/utils";
 
-// 🌗 Dark / Light toggle
-export function ThemeToggle({ className }: { className?: string }) {
-  const { theme, toggle } = useTheme();
-  const dark = theme === "dark";
-  return (
-    <button
-      onClick={toggle}
-      title={dark ? "Light mode" : "Dark mode"}
-      aria-label={dark ? "Switch to light mode" : "Switch to dark mode"}
-      className={cn(
-        "grid size-10 place-items-center rounded-xl bg-slate-100 text-slate-600 transition hover:text-slate-900 dark:bg-white/10 dark:text-amber-300 dark:hover:text-amber-200",
-        className
-      )}
-    >
-      {dark ? <Sun className="size-[18px]" /> : <Moon className="size-[18px]" />}
-    </button>
-  );
-}
+export { ThemeToggle };
 
 // 🔀 Layout switch button (sidebar ⇄ topbar)
 export function LayoutSwitch({ className }: { className?: string }) {

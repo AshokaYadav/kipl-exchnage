@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { CheckCircle2 } from "lucide-react";
 import { Logo } from "@/components/ui/logo";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { siteConfig } from "@/config/site";
 
 export function AuthShell({
@@ -15,7 +16,7 @@ export function AuthShell({
   footer?: ReactNode;
 }) {
   return (
-    <div className="grid min-h-screen lg:grid-cols-2">
+    <div className="grid min-h-screen bg-slate-50 dark:bg-[#070b1f] lg:grid-cols-2">
       {/* Left brand panel */}
       <aside className="relative hidden overflow-hidden bg-brand-950 p-12 text-white lg:flex lg:flex-col lg:justify-between">
         <div className="grid-bg absolute inset-0" />
@@ -43,13 +44,14 @@ export function AuthShell({
       </aside>
 
       {/* Form side */}
-      <main className="flex items-center justify-center px-4 py-12">
+      <main className="relative flex items-center justify-center px-4 py-12">
+        <ThemeToggle className="absolute right-4 top-4" />
         <div className="w-full max-w-md">
           <Logo className="mb-10 lg:hidden" />
-          <h1 className="text-3xl font-extrabold tracking-tight">{title}</h1>
-          <p className="mt-2 text-slate-600">{subtitle}</p>
+          <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">{title}</h1>
+          <p className="mt-2 text-slate-600 dark:text-slate-400">{subtitle}</p>
           <div className="mt-8">{children}</div>
-          {footer && <div className="mt-8 text-center text-sm text-slate-600">{footer}</div>}
+          {footer && <div className="mt-8 text-center text-sm text-slate-600 dark:text-slate-400">{footer}</div>}
         </div>
       </main>
     </div>

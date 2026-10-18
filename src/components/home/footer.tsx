@@ -1,10 +1,15 @@
 import Link from "next/link";
-import { Facebook, Instagram, Mail, Phone, Twitter } from "lucide-react";
+import { Facebook, Instagram, Mail, MapPin, Phone, Twitter } from "lucide-react";
 import { Logo } from "@/components/ui/logo";
 import { siteConfig } from "@/config/site";
 
 export function Footer() {
   const year = new Date().getFullYear();
+  const c = siteConfig.contact;
+  const mapUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+    `${siteConfig.company}, ${c.address}`
+  )}`;
+
   return (
     <footer className="bg-brand-950 text-brand-100">
       <div className="mx-auto grid max-w-7xl gap-10 px-4 py-14 sm:grid-cols-2 lg:grid-cols-4">
@@ -50,12 +55,35 @@ export function Footer() {
         <div>
           <h4 className="font-semibold text-white">Contact Us</h4>
           <ul className="mt-4 space-y-3 text-sm">
-            <li className="flex items-center gap-2"><Phone className="size-4" /> {siteConfig.contact.phone}</li>
-            <li className="flex items-center gap-2 break-all"><Mail className="size-4 shrink-0" /> {siteConfig.contact.email}</li>
-            <li className="flex items-center gap-2 break-all"><Mail className="size-4 shrink-0" /> {siteConfig.contact.altEmail}</li>
+            <li>
+              <a href={mapUrl} target="_blank" rel="noopener noreferrer" className="flex gap-2 hover:text-white">
+                <MapPin className="mt-0.5 size-4 shrink-0" />
+                <span>
+                  <span className="block font-semibold text-white">{siteConfig.company}</span>
+                  {c.addressLines.map((line) => (
+                    <span key={line} className="block">{line}</span>
+                  ))}
+                </span>
+              </a>
+            </li>
+            <li>
+              <a href={`tel:${c.phone.replace(/\s/g, "")}`} className="flex items-center gap-2 hover:text-white">
+                <Phone className="size-4 shrink-0" /> {c.phone}
+              </a>
+            </li>
+            <li>
+              <a href={`mailto:${c.email}`} className="flex items-center gap-2 break-all hover:text-white">
+                <Mail className="size-4 shrink-0" /> {c.email}
+              </a>
+            </li>
           </ul>
         </div>
+
+        <div className="col-span-full text-center text-sm text-brand-200">
+          <p>Made with ❤️ in India 🇮🇳</p>
+        </div>
       </div>
+
       <div className="border-t border-white/10">
         <p className="mx-auto max-w-7xl px-4 py-5 text-center text-xs text-brand-300">
           © {year} {siteConfig.brand} · {siteConfig.company}. All rights reserved.

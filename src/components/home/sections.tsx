@@ -38,14 +38,14 @@ const services = [
 
 export function Services() {
   return (
-    <section id="services" className="py-20 lg:py-28">
+    <section id="services" className="bg-slate-50 py-20 dark:bg-slate-950 lg:py-28">
       <div className="mx-auto max-w-7xl px-4">
         <div className="mx-auto max-w-2xl text-center">
-          <p className="text-sm font-bold tracking-widest text-brand-600">OUR SERVICES</p>
-          <h2 className="mt-3 text-3xl font-extrabold tracking-tight sm:text-4xl">
+          <p className="text-sm font-bold tracking-widest text-brand-600 dark:text-brand-400">OUR SERVICES</p>
+          <h2 className="mt-3 text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white sm:text-4xl">
             One exchange for every recharge
           </h2>
-          <p className="mt-4 text-slate-600">
+          <p className="mt-4 text-slate-600 dark:text-slate-400">
             Connect your network, manage your stock, control your margins and
             automate your B2B recharge business.
           </p>
@@ -53,12 +53,12 @@ export function Services() {
 
         <div className="mt-14 grid gap-6 md:grid-cols-3">
           {services.map((s) => (
-            <div key={s.title} className="group rounded-3xl border border-slate-200 bg-white p-7 transition hover:-translate-y-1 hover:border-brand-200 hover:shadow-xl hover:shadow-brand-600/5">
-              <span className="grid size-12 place-items-center rounded-2xl bg-brand-50 text-brand-600 transition group-hover:bg-brand-600 group-hover:text-white">
+            <div key={s.title} className="group rounded-3xl border border-slate-200 bg-white p-7 transition hover:-translate-y-1 hover:border-brand-200 hover:shadow-xl hover:shadow-brand-600/5 dark:border-white/10 dark:bg-slate-900 dark:hover:border-brand-500/40">
+              <span className="grid size-12 place-items-center rounded-2xl bg-brand-50 text-brand-600 transition group-hover:bg-brand-600 group-hover:text-white dark:bg-brand-500/15 dark:text-brand-300">
                 <s.icon className="size-6" />
               </span>
-              <h3 className="mt-5 text-lg font-bold">{s.title}</h3>
-              <p className="mt-2 text-sm leading-relaxed text-slate-600">{s.text}</p>
+              <h3 className="mt-5 text-lg font-bold text-slate-900 dark:text-white">{s.title}</h3>
+              <p className="mt-2 text-sm leading-relaxed text-slate-600 dark:text-slate-400">{s.text}</p>
             </div>
           ))}
         </div>
@@ -83,36 +83,36 @@ const stats = [
 
 export function About() {
   return (
-    <section id="about" className="bg-white py-20 lg:py-28">
+    <section id="about" className="bg-white py-20 dark:bg-[#070b1f] lg:py-28">
       <div className="mx-auto grid max-w-7xl gap-14 px-4 lg:grid-cols-2 lg:items-center">
         <div>
-          <p className="text-sm font-bold tracking-widest text-brand-600">ABOUT {siteConfig.brand.toUpperCase()}</p>
-          <h2 className="mt-3 text-3xl font-extrabold tracking-tight sm:text-4xl">
+          <p className="text-sm font-bold tracking-widest text-brand-600 dark:text-brand-400">ABOUT {siteConfig.brand.toUpperCase()}</p>
+          <h2 className="mt-3 text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white sm:text-4xl">
             Built like an exchange, priced like a wholesaler
           </h2>
-          <p className="mt-4 text-slate-600">
+          <p className="mt-4 text-slate-600 dark:text-slate-400">
             {siteConfig.brand}, operated by {siteConfig.company}, is a tech-driven
             recharge platform built for businesses across India. We connect you
             to operator rates with clear, transparent commission structures.
           </p>
           <ul className="mt-6 space-y-3">
             {aboutPoints.map((p) => (
-              <li key={p} className="flex gap-3 text-slate-700">
-                <BadgeCheck className="mt-0.5 size-5 shrink-0 text-brand-600" />
+              <li key={p} className="flex gap-3 text-slate-700 dark:text-slate-300">
+                <BadgeCheck className="mt-0.5 size-5 shrink-0 text-brand-600 dark:text-brand-400" />
                 <span>{p}</span>
               </li>
             ))}
           </ul>
-          <a href="#contact" className="mt-8 inline-flex items-center gap-2 font-semibold text-brand-600 hover:gap-3 transition-all">
+          <a href="#contact" className="mt-8 inline-flex items-center gap-2 font-semibold text-brand-600 transition-all hover:gap-3 dark:text-brand-400">
             Learn more about us <ArrowRight className="size-4" />
           </a>
         </div>
 
         <div className="grid grid-cols-2 gap-4">
           {stats.map((s, i) => (
-            <div key={s.label} className={i % 3 === 0 ? "rounded-3xl bg-brand-600 p-6 text-white" : "rounded-3xl border border-slate-200 bg-slate-50 p-6"}>
+            <div key={s.label} className={i % 3 === 0 ? "rounded-3xl bg-brand-600 p-6 text-white" : "rounded-3xl border border-slate-200 bg-slate-50 p-6 text-slate-900 dark:border-white/10 dark:bg-slate-900 dark:text-white"}>
               <p className="text-4xl font-extrabold">{s.value}</p>
-              <p className={i % 3 === 0 ? "mt-2 text-sm text-brand-100" : "mt-2 text-sm text-slate-600"}>{s.label}</p>
+              <p className={i % 3 === 0 ? "mt-2 text-sm text-brand-100" : "mt-2 text-sm text-slate-600 dark:text-slate-400"}>{s.label}</p>
             </div>
           ))}
         </div>
@@ -131,33 +131,33 @@ const why = [
 
 export function WhyUs() {
   return (
-    <section className="py-20 lg:py-28">
+    <section className="bg-slate-50 py-20 dark:bg-slate-950 lg:py-28">
       <div className="mx-auto max-w-7xl px-4">
         <div className="mx-auto max-w-2xl text-center">
-          <p className="text-sm font-bold tracking-widest text-brand-600">GROW YOUR BUSINESS</p>
-          <h2 className="mt-3 text-3xl font-extrabold tracking-tight sm:text-4xl">Why choose {siteConfig.brand}</h2>
+          <p className="text-sm font-bold tracking-widest text-brand-600 dark:text-brand-400">GROW YOUR BUSINESS</p>
+          <h2 className="mt-3 text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white sm:text-4xl">Why choose {siteConfig.brand}</h2>
         </div>
         <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {why.map((w) => (
-            <div key={w.title} className="rounded-3xl border border-slate-200 bg-white p-6">
-              <w.icon className="size-7 text-brand-600" />
-              <h3 className="mt-4 font-bold">{w.title}</h3>
-              <p className="mt-2 text-sm text-slate-600">{w.text}</p>
+            <div key={w.title} className="rounded-3xl border border-slate-200 bg-white p-6 dark:border-white/10 dark:bg-slate-900">
+              <w.icon className="size-7 text-brand-600 dark:text-brand-400" />
+              <h3 className="mt-4 font-bold text-slate-900 dark:text-white">{w.title}</h3>
+              <p className="mt-2 text-sm text-slate-600 dark:text-slate-400">{w.text}</p>
             </div>
           ))}
         </div>
 
         {/* Testimonial */}
-        <figure className="mx-auto mt-16 max-w-3xl rounded-3xl bg-white p-8 text-center shadow-sm ring-1 ring-slate-200">
-          <Quote className="mx-auto size-8 text-brand-200" />
-          <blockquote className="mt-4 text-xl font-semibold text-slate-800">
+        <figure className="mx-auto mt-16 max-w-3xl rounded-3xl bg-white p-8 text-center shadow-sm ring-1 ring-slate-200 dark:bg-slate-900 dark:ring-white/10">
+          <Quote className="mx-auto size-8 text-brand-200 dark:text-brand-500/50" />
+          <blockquote className="mt-4 text-xl font-semibold text-slate-800 dark:text-slate-100">
             “Switching to {siteConfig.brand} cut our monthly recharge costs immediately.”
           </blockquote>
           <figcaption className="mt-5 flex items-center justify-center gap-3">
             <span className="grid size-10 place-items-center rounded-full bg-brand-600 text-sm font-bold text-white">RS</span>
             <span className="text-left text-sm">
-              <span className="block font-semibold">Rakesh Sharma</span>
-              <span className="text-slate-500">Retail Partner, Lucknow</span>
+              <span className="block font-semibold text-slate-900 dark:text-white">Rakesh Sharma</span>
+              <span className="text-slate-500 dark:text-slate-400">Retail Partner, Lucknow</span>
             </span>
           </figcaption>
         </figure>
@@ -178,9 +178,9 @@ export function Contact() {
   ];
 
   return (
-    <section id="contact" className="bg-white py-20 lg:py-28">
+    <section id="contact" className="bg-white py-20 dark:bg-[#070b1f] lg:py-28">
       <div className="mx-auto max-w-7xl px-4">
-        <div className="relative overflow-hidden rounded-[2rem] bg-brand-950 p-8 text-white sm:p-12">
+        <div className="relative overflow-hidden rounded-[2rem] bg-brand-950 p-8 text-white dark:ring-1 dark:ring-white/10 sm:p-12">
           <div className="grid-bg absolute inset-0" />
           <div className="relative grid gap-10 lg:grid-cols-2 lg:items-center">
             <div>

@@ -5,11 +5,20 @@ export const siteConfig = {
   tagline: "Mobile & DTH Recharge Market Place",
   description:
     "B2B recharge exchange — connect your APIs, set your margins and automate your entire recharge flow.",
-  contact: {
+    contact: {
     phone: "+91 9570007333",
     email: "Support@kiplexchange.com",
     altEmail: "Support@kiplexchange.com",
-    address: "India",
+    // Ek line wala address (Contact section mein use hota hai)
+    address:
+      "Plot No. 102, Sherpur, N.H.-48, Behror, District: Kotputli Behror, Rajasthan - 301701",
+    // Footer mein line-by-line dikhane ke liye
+    addressLines: [
+      "Plot No. 102, Sherpur",
+      "N.H.-48, Behror",
+      "District: Kotputli Behror",
+      "Rajasthan - 301701",
+    ],
   },
   social: {
     facebook: "#",
