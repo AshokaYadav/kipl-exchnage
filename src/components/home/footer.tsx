@@ -1,0 +1,66 @@
+import Link from "next/link";
+import { Facebook, Instagram, Mail, Phone, Twitter } from "lucide-react";
+import { Logo } from "@/components/ui/logo";
+import { siteConfig } from "@/config/site";
+
+export function Footer() {
+  const year = new Date().getFullYear();
+  return (
+    <footer className="bg-brand-950 text-brand-100">
+      <div className="mx-auto grid max-w-7xl gap-10 px-4 py-14 sm:grid-cols-2 lg:grid-cols-4">
+        <div>
+          <Logo light />
+          <p className="mt-4 text-sm leading-relaxed text-brand-200">
+            A tech-driven B2B recharge exchange focused on alternate payment technologies.
+          </p>
+          <div className="mt-5 flex gap-3">
+            {[
+              { Icon: Facebook, href: siteConfig.social.facebook, label: "Facebook" },
+              { Icon: Instagram, href: siteConfig.social.instagram, label: "Instagram" },
+              { Icon: Twitter, href: siteConfig.social.x, label: "X" },
+            ].map(({ Icon, href, label }) => (
+              <a key={label} href={href} aria-label={label} className="grid size-9 place-items-center rounded-lg bg-white/5 hover:bg-white/15">
+                <Icon className="size-4" />
+              </a>
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <h4 className="font-semibold text-white">Quick Links</h4>
+          <ul className="mt-4 space-y-2 text-sm">
+            <li><a href="#home" className="hover:text-white">Home</a></li>
+            <li><a href="#about" className="hover:text-white">About Us</a></li>
+            <li><a href="#services" className="hover:text-white">Services</a></li>
+            <li><Link href="/privacy-policy" className="hover:text-white">Privacy Policy</Link></li>
+            <li><Link href="/terms" className="hover:text-white">Terms &amp; Conditions</Link></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 className="font-semibold text-white">Services</h4>
+          <ul className="mt-4 space-y-2 text-sm">
+            <li>Mobile Recharge</li>
+            <li>DTH Recharge</li>
+            <li>Recharge API</li>
+            <li>B2B Exchange</li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 className="font-semibold text-white">Contact Us</h4>
+          <ul className="mt-4 space-y-3 text-sm">
+            <li className="flex items-center gap-2"><Phone className="size-4" /> {siteConfig.contact.phone}</li>
+            <li className="flex items-center gap-2 break-all"><Mail className="size-4 shrink-0" /> {siteConfig.contact.email}</li>
+            <li className="flex items-center gap-2 break-all"><Mail className="size-4 shrink-0" /> {siteConfig.contact.altEmail}</li>
+          </ul>
+        </div>
+      </div>
+      <div className="border-t border-white/10">
+        <p className="mx-auto max-w-7xl px-4 py-5 text-center text-xs text-brand-300">
+          © {year} {siteConfig.brand} · {siteConfig.company}. All rights reserved.
+        </p>
+      </div>
+    </footer>
+  );
+}
