@@ -79,14 +79,14 @@ export function Footer() {
           </ul>
         </div>
 
-        <div className="col-span-full text-center text-sm text-brand-200">
+      </div>
+        <div className="col-span-full text-center text-sm text-brand-200 mb-4">
           <p>Made with ❤️ in India 🇮🇳</p>
         </div>
-      </div>
 
       <div className="border-t border-white/10">
         <p className="mx-auto max-w-7xl px-4 py-5 text-center text-xs text-brand-300">
-          © {year} {siteConfig.brand} · {siteConfig.company}. All rights reserved.
+          © {year} · {siteConfig.company}. All rights reserved.
         </p>
       </div>
     </footer>
