@@ -5,38 +5,21 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { getErrorMessage } from "@/lib/axios";
 import { clearSession } from "@/lib/session";
-import {
-  createUser,
-  extractOtpToken,
-  sendOTP,
-  verifyOTP,
-} from "@/services/auth.service";
+import { createUser, sendOTP, verifyOTP } from "@/services/auth.service";
 
 // 📲 OTP bhejna
 export function useSendOtp(onToken: (token: string) => void) {
   return useMutation({
     mutationFn: (mobile: string) => sendOTP(mobile),
     onSuccess: (res, mobile) => {
-      // 🔍 Debug: browser console (F12) mein poora response dikhega
-      console.log("[login-app] response:", res);
-
-      // Backend ne saaf mana kiya (status false) → error dikhao, screen mat badlo
-      const failed = res?.status === false || res?.status === "false" || res?.success === false;
-      if (failed) {
+      if (res?.err) {
         toast.error(res?.message ?? "OTP nahi bhej paaye, dobara try karo.");
         return;
       }
 
-      const token = extractOtpToken(res);
-      if (!token) {
-        // Token nahi mila par OTP chala gaya → OTP screen phir bhi kholo.
-        // Fallback: mobile ko token ki jagah bhejenge; galat hua toh verify par
-        // backend ka asli error dikhega.
-        console.warn("[login-app] token key nahi mili, mobile fallback use ho raha hai");
-      }
-
       toast.success(res?.message ?? "OTP bhej diya gaya ✅");
-      onToken(token ?? mobile);
+      // Verify ke liye mobile hi chahiye
+      onToken(mobile);
     },
     onError: (err) => toast.error(getErrorMessage(err)),
   });

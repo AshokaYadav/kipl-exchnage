@@ -4,7 +4,7 @@ import { clearSession, getToken } from "@/lib/session";
 export const axiosInstance = axios.create({
   baseURL:
     process.env.NEXT_PUBLIC_API_BASE_URL ??
-    "https://api.recharge.copy.kashishindiapvtltd.com",
+    "https://api.kiplexchange.com/",
   headers: {
     "Content-Type": "application/json",
   },

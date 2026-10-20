@@ -34,6 +34,7 @@ export type DashboardNavItem = {
     | "dashboard"
     | "payment"
     | "margin"
+    | "apis"
     | "purchase"
     | "reseller"
     | "account"
@@ -47,6 +48,7 @@ export const dashboardNav: DashboardNavItem[] = [
   { label: "Dashboard", href: "/dashboard", icon: "dashboard" },
   { label: "Payment", href: "/dashboard/payment", icon: "payment" },
   { label: "Fix Margin", href: "/dashboard/fix-margin", icon: "margin" },
+  { label: "My APIs", href: "/dashboard/apis", icon: "apis" },
   { label: "Purchase", href: "/dashboard/purchase", icon: "purchase" },
   { label: "ReSeller", href: "/dashboard/reseller", icon: "reseller" },
   { label: "Account", href: "/dashboard/account", icon: "account" },
