@@ -30,7 +30,7 @@ export function Footer() {
             ))}
           </div>
         </div>
-
+{/* j;dfa */}
         <div>
           <h4 className="font-semibold text-white">Quick Links</h4>
           <ul className="mt-4 space-y-2 text-sm">
