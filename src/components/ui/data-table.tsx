@@ -22,6 +22,7 @@ export function DataTable<T>({
   emptyText?: string;
 }) {
   const [sorting, setSorting] = useState<SortingState>([]);
+  
   const table = useReactTable({
     data,
     columns,

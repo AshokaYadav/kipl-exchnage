@@ -1,6 +1,8 @@
 import {
+  Boxes,
   CreditCard,
   Download,
+  Gauge,
   Code2,
   HelpCircle,
   LayoutDashboard,
@@ -17,7 +19,9 @@ const map = {
   dashboard: LayoutDashboard,
   payment: CreditCard,
   margin: Percent,
+  requiredMargin: Gauge,
   apis: Plug,
+  stock: Boxes,
   purchase: ShoppingCart,
   reseller: Users,
   account: Wallet,

@@ -16,6 +16,11 @@ const apiHelper = createColumnHelper<ProviderApi>();
 
 
 
+
+
+
+
+
 export default function ApisPage() {
   const { data = [], isLoading, isError, refetch } = useApis();
   // undefined = form band, null = nayi API, object = edit
@@ -29,17 +34,19 @@ export default function ApisPage() {
         header: "Name",
         cell: (i) => <span className="font-semibold">{i.getValue()}</span>,
       }),
-      apiHelper.accessor("type", { header: "Type" }),
-      apiHelper.accessor("method", { header: "Method" }),
-      apiHelper.accessor("url", {
-        header: "URL",
-        cell: (i) => (
-          <span className="block max-w-[260px] truncate text-slate-500 dark:text-slate-400" title={i.getValue()}>
-            {i.getValue()}
-          </span>
-        ),
-      }),
-      apiHelper.accessor("timeout", { header: "Timeout (ms)" }),
+      apiHelper.accessor("admin-status", { header: "Admin Status" }),
+      apiHelper.accessor("why-deactivated", { header: "Why Deactivated" }),
+      // apiHelper.accessor("type", { header: "Type" }),
+      // apiHelper.accessor("method", { header: "Method" }),
+      // apiHelper.accessor("url", {
+      //   header: "URL",
+      //   cell: (i) => (
+      //     <span className="block max-w-[260px] truncate text-slate-500 dark:text-slate-400" title={i.getValue()}>
+      //       {i.getValue()}
+      //     </span>
+      //   ),
+      // }),
+      // apiHelper.accessor("timeout", { header: "Timeout (ms)" }),
       apiHelper.accessor("status", {
         header: "Status",
         cell: (i) =>
@@ -113,6 +120,29 @@ export default function ApisPage() {
     </div>
   );
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
