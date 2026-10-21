@@ -1,9 +1,8 @@
 // 📊 Dashboard data
-// ⚠️ Abhi DEMO data hai (tumhare purane dashboard ke numbers se).
-// Jab backend ka dashboard endpoint mile, sirf `getDashboard()` ke andar
-// axiosInstance.get("/dashboard") laga dena — baaki UI apne aap chalega.
+// ⚠️ Wallet balance real API (/apis/exchange/wallet) se aata hai, baaki abhi DEMO data hai.
+// Jab backend ka dashboard endpoint mile, `getDashboard()` mein woh bhi laga dena.
 
-// import { axiosInstance } from "@/lib/axios";
+import { axiosInstance } from "@/lib/axios";
 
 export type TxnRow = {
   operator: string;
@@ -73,9 +72,30 @@ const demo: DashboardData = {
   ],
 };
 
+export type WalletInfo = { id: string; balance: number; is_active: boolean };
+
+export type UserWallet = {
+  user_id: string;
+  buyer_wallet: WalletInfo;
+  seller_wallet: WalletInfo;
+  total_balance: number;
+};
+
+// 💰 User ka buyer + seller wallet balance
+export const getWallet = async (): Promise<UserWallet> => {
+  const res = await axiosInstance.get("/apis/exchange/wallet");
+  if (res.data?.err) throw new Error(res.data.message ?? "Wallet balance nahi mila");
+  return res.data.data;
+};
+
+// Wallet real API se aata hai, baaki abhi demo
 export async function getDashboard(): Promise<DashboardData> {
-  // const res = await axiosInstance.get("/dashboard");
-  // return res.data;
-  await new Promise((r) => setTimeout(r, 400));
-  return demo;
+  const wallet = await getWallet();
+  return {
+    ...demo,
+    wallet: {
+      buyer: Number(wallet?.buyer_wallet?.balance ?? 0),
+      seller: Number(wallet?.seller_wallet?.balance ?? 0),
+    },
+  };
 }
