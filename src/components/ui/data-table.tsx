@@ -16,10 +16,12 @@ export function DataTable<T>({
   columns,
   data,
   emptyText = "No records",
+  getRowId,
 }: {
   columns: ColumnDef<T, any>[]; // eslint-disable-line @typescript-eslint/no-explicit-any
   data: T[];
   emptyText?: string;
+  getRowId?: (row: T) => string;
 }) {
   const [sorting, setSorting] = useState<SortingState>([]);
   
@@ -28,6 +30,7 @@ export function DataTable<T>({
     columns,
     state: { sorting },
     onSortingChange: setSorting,
+    getRowId,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
   });

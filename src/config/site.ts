@@ -35,8 +35,16 @@ export type DashboardNavItem = {
     | "payment"
     | "margin"
     | "requiredMargin"
+    | "rechargeHistory"
+    | "daybook"
+    | "sellerHistory"
+    | "sellerLedger"
+    | "fundRequest"
+    | "settlementBanks"
+    | "settlement"
     | "apis"
     | "stock"
+    | "availableStock"
     | "purchase"
     | "reseller"
     | "account"
@@ -49,10 +57,18 @@ export type DashboardNavItem = {
 export const dashboardNav: DashboardNavItem[] = [
   { label: "Dashboard", href: "/dashboard", icon: "dashboard" },
   { label: "Payment", href: "/dashboard/payment", icon: "payment" },
+  { label: "Fund Request", href: "/dashboard/fund-request", icon: "fundRequest" },
+  { label: "Settlement", href: "/dashboard/settlement", icon: "settlement" },
+  { label: "Settlement Banks", href: "/dashboard/settlement-banks", icon: "settlementBanks" },
   { label: "Fix Margin", href: "/dashboard/fix-margin", icon: "margin" },
   { label: "My APIs", href: "/dashboard/apis", icon: "apis" },
   { label: "Stock", href: "/dashboard/stock", icon: "stock" },
+  { label: "Available Stock", href: "/dashboard/available-stock", icon: "availableStock" },
   { label: "Required Margin", href: "/dashboard/required-margin", icon: "requiredMargin" },
+  { label: "Recharge History", href: "/dashboard/recharge-history", icon: "rechargeHistory" },
+  { label: "Daybook", href: "/dashboard/daybook", icon: "daybook" },
+  { label: "Seller History", href: "/dashboard/seller-history", icon: "sellerHistory" },
+  { label: "Seller Ledger", href: "/dashboard/seller-ledger", icon: "sellerLedger" },
   { label: "Purchase", href: "/dashboard/purchase", icon: "purchase" },
   { label: "ReSeller", href: "/dashboard/reseller", icon: "reseller" },
   { label: "Account", href: "/dashboard/account", icon: "account" },

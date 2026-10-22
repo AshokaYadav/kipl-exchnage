@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/ui/data-table";
 import { Input } from "@/components/ui/input";
 import { OperatorMappingModal } from "@/components/apis/operator-mapping-modal";
-import { useApis, useSaveApi } from "@/hooks/useApis";
+import { useApis, useSaveApi, useToggleApiStatus } from "@/hooks/useApis";
 import type { ProviderApi, ProviderApiInput, StatusMap, StringMap } from "@/services/apis.service";
 
 const apiHelper = createColumnHelper<ProviderApi>();
@@ -26,6 +26,8 @@ export default function ApisPage() {
   // undefined = form band, null = nayi API, object = edit
   const [editing, setEditing] = useState<ProviderApi | null | undefined>(undefined);
   const [mappingApi, setMappingApi] = useState<ProviderApi | null>(null);
+  const toggleStatus = useToggleApiStatus();
+  const togglingId = toggleStatus.isPending ? toggleStatus.variables?.id : undefined;
 
   const columns = useMemo(
     () => [
@@ -49,12 +51,25 @@ export default function ApisPage() {
       // apiHelper.accessor("timeout", { header: "Timeout (ms)" }),
       apiHelper.accessor("status", {
         header: "Status",
-        cell: (i) =>
-          i.getValue() ? (
-            <span className="rounded-md bg-emerald-50 px-2 py-0.5 text-xs font-semibold text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-300">Active</span>
-          ) : (
-            <span className="rounded-md bg-slate-100 px-2 py-0.5 text-xs font-semibold text-slate-600 dark:bg-white/10 dark:text-slate-300">Inactive</span>
-          ),
+        // Click par active ↔ inactive (backend 1 / 0 leta hai)
+        cell: (i) => {
+          const { id } = i.row.original;
+          const active = Boolean(i.getValue());
+          return (
+            <button
+              onClick={() => toggleStatus.mutate({ id, status: active ? 0 : 1 })}
+              disabled={togglingId === id}
+              title={active ? "Inactive karo" : "Active karo"}
+              className={`rounded-md px-2 py-0.5 text-xs font-semibold disabled:opacity-50 ${
+                active
+                  ? "bg-emerald-50 text-emerald-700 hover:bg-emerald-100 dark:bg-emerald-500/15 dark:text-emerald-300"
+                  : "bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-white/10 dark:text-slate-300"
+              }`}
+            >
+              {active ? "Active" : "Inactive"}
+            </button>
+          );
+        },
       }),
       apiHelper.display({
         id: "actions",
@@ -77,7 +92,7 @@ export default function ApisPage() {
         ),
       }),
     ],
-    []
+    [toggleStatus.mutate, togglingId]
   );
 
   return (

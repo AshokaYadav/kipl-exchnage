@@ -44,6 +44,7 @@ export type ProviderApiInput = {
   request_template?: StringMap;
   response_mapping?: StringMap;
   status_mapping?: StatusMap;
+  status?: number;
 };
 
 export type OperatorMapping = {

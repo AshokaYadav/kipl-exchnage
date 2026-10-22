@@ -36,6 +36,19 @@ export function useSaveApi(onDone: () => void) {
   });
 }
 
+// 🔁 Table se Active / Inactive — edit wali API par sirf status jaata hai
+export function useToggleApiStatus() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, status }: { id: string; status: number }) => updateApi(id, { status }),
+    onSuccess: (_, { status }) => {
+      toast.success(status ? "API active ho gayi ✅" : "API inactive ho gayi ✅");
+      queryClient.invalidateQueries({ queryKey: ["apis"] });
+    },
+    onError: (err) => toast.error(getErrorMessage(err)),
+  });
+}
+
 // 🗂️ Categories (mapping modal ke dropdown ke liye)
 export function useCategories() {
   return useQuery({ queryKey: ["categories"], queryFn: getCategories, retry: 1 });
