@@ -34,7 +34,7 @@ export default function StockPage() {
 
 
 
-  
+
   const columns = useMemo(
     () => [
       stockHelper.accessor((s) => s.operator?.name ?? "N/A", {
@@ -470,13 +470,16 @@ function StockFormModal({ circles, onClose }: { circles: Named[]; onClose: () =>
           <Select label="Amount Type" value={form.amount_type} onChange={(v) => set("amount_type", v)}>
             <option value="MULTIPLE">MULTIPLE</option>
             <option value="ALL">ALL</option>
+            <option value="MULTIPLE">RANGE</option>
           </Select>
+
+
           <Input
             label="Amount"
             name="amount"
             value={form.amount}
             disabled={form.amount_type === "ALL"}
-            placeholder="e.g. 500"
+            placeholder={form.amount_type === "ALL" ? "e.g. 500-1000" : "e.g. 500,1000,1500"}
             onChange={(e) => set("amount", e.target.value)}
           />
 
