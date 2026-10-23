@@ -4,13 +4,13 @@ import { use } from "react";
 import { notFound } from "next/navigation";
 import { Construction } from "lucide-react";
 import { NavIcon } from "@/components/layout/nav-icon";
-import { dashboardNav } from "@/config/site";
+import { flatDashboardNav } from "@/config/site";
 
 // Payment, Fix Margin, Purchase, ReSeller... sab pages yahan se.
 // Kisi page ko alag banana ho toh: src/app/(dashboard)/dashboard/<naam>/page.tsx bana do.
 export default function SectionPage({ params }: { params: Promise<{ section: string }> }) {
   const { section } = use(params);
-  const item = dashboardNav.find((n) => n.href === `/dashboard/${section}`);
+  const item = flatDashboardNav.find((n) => n.href === `/dashboard/${section}`);
   if (!item) notFound();
 
   return (

@@ -3,11 +3,11 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, type ReactNode } from "react";
-import { LogOut, Menu, X } from "lucide-react";
+import { ChevronDown, LogOut, Menu, X } from "lucide-react";
 import { Logo } from "@/components/ui/logo";
 import { NavIcon } from "@/components/layout/nav-icon";
 import { LayoutSwitch, ThemeToggle, UserMenu } from "@/components/layout/user-menu";
-import { dashboardNav } from "@/config/site";
+import { dashboardNav, type DashboardNavItem } from "@/config/site";
 import { useLogout } from "@/hooks/useAuth";
 import type { AppUser } from "@/lib/session";
 import { cn } from "@/lib/utils";
@@ -21,6 +21,7 @@ export function SidebarLayout({ user, children }: { user: AppUser | null; childr
   const nav = (
     <nav className="flex flex-1 flex-col gap-1 overflow-y-auto px-3 py-4">
       {dashboardNav.map((item) => {
+        if (item.children) return <SidebarGroup key={item.href} item={item} pathname={pathname} onNavigate={() => setOpen(false)} />;
         const active = pathname === item.href;
         return (
           <Link
@@ -80,6 +81,50 @@ export function SidebarLayout({ user, children }: { user: AppUser | null; childr
       </header>
 
       <main className="p-4 sm:p-6">{children}</main>
+    </div>
+  );
+}
+
+// Sidebar dropdown group (Buyer etc.) — andar ka page active ho toh khula rehta hai
+function SidebarGroup({ item, pathname, onNavigate }: { item: DashboardNavItem; pathname: string; onNavigate: () => void }) {
+  const active = item.children!.some((c) => c.href === pathname);
+  const [expanded, setExpanded] = useState(active);
+
+  return (
+    <div>
+      <button
+        onClick={() => setExpanded((e) => !e)}
+        className={cn(
+          "flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition",
+          active ? "text-white" : "text-brand-200 hover:bg-white/5 hover:text-white"
+        )}
+      >
+        <NavIcon name={item.icon} className="size-[18px]" />
+        {item.label}
+        <ChevronDown className={cn("ml-auto size-4 transition", expanded && "rotate-180")} />
+      </button>
+      {expanded && (
+        <div className="ml-5 mt-1 flex flex-col gap-1 border-l border-white/10 pl-3">
+          {item.children!.map((child) => {
+            const childActive = pathname === child.href;
+            return (
+              <Link
+                key={child.href}
+                href={child.href}
+                onClick={onNavigate}
+                className={cn(
+                  "flex items-center gap-3 rounded-xl px-3 py-2 text-sm font-medium transition",
+                  childActive ? "bg-white/10 text-white" : "text-brand-200 hover:bg-white/5 hover:text-white"
+                )}
+              >
+                <NavIcon name={child.icon} className="size-4" />
+                {child.label}
+                {childActive && <span className="ml-auto size-1.5 rounded-full bg-accent-400" />}
+              </Link>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }
