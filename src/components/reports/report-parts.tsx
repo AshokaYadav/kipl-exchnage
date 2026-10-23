@@ -47,7 +47,7 @@ export function StatusBadge({ status }: { status: string }) {
   // Backend kabhi "PENDIND" bhej deta hai — usko bhi PENDING maano
   const s = status?.toUpperCase().startsWith("PEND") ? "PENDING" : status?.toUpperCase();
   const tone =
-    s === "SUCCESS" || s === "APPROVED"
+    s === "SUCCESS" || s === "APPROVED" || s === "RESOLVED"
       ? "bg-emerald-50 text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-300"
       : s === "FAILED" || s === "REJECTED"
         ? "bg-red-50 text-red-700 dark:bg-red-500/15 dark:text-red-300"

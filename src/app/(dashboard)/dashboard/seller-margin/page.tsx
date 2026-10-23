@@ -9,6 +9,7 @@ import { DataTable } from "@/components/ui/data-table";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { useApis, useCategories, useOperatorMappings } from "@/hooks/useApis";
+import { useAvailableStockOptions } from "@/hooks/useAvailableStock";
 import { useCreateStock, useDeleteStock, useStock, useUpdateStock } from "@/hooks/useStock";
 import { DEMO_CATEGORY, type Category } from "@/services/apis.service";
 import type { Named, Stock, StockInput } from "@/services/stock.service";
@@ -314,7 +315,6 @@ type FormState = {
   amount: string;
   circle_type: string;
   circle: string[];
-  extraCircles: string;
   margin: string;
   limit_amount: string;
   limit_type: string;
@@ -326,9 +326,8 @@ const EMPTY: FormState = {
   operator_id: "",
   amount_type: "MULTIPLE",
   amount: "",
-  circle_type: "MULTIPLE",
+  circle_type: "ALL",
   circle: [],
-  extraCircles: "",
   margin: "",
   limit_amount: "",
   limit_type: "DAILY",
@@ -338,15 +337,7 @@ function toPayload(f: FormState): StockInput {
   if (!f.api_id) throw new Error("API chuno");
   if (!f.category_id) throw new Error("Category chuno");
   if (!f.operator_id) throw new Error("Operator chuno");
-  if (f.amount_type === "MULTIPLE" && !f.amount.trim()) throw new Error("Amount daalo");
-
-  const circle = [
-    ...new Set([
-      ...f.circle,
-      ...f.extraCircles.split(/[\s,]+/).map((s) => s.trim()).filter(Boolean),
-    ]),
-  ];
-  if (f.circle_type === "MULTIPLE" && circle.length === 0) throw new Error("Kam se kam ek circle chuno");
+  if (f.amount_type !== "ALL" && !f.amount.trim()) throw new Error("Amount daalo");
 
   const margin = Number(f.margin);
   if (f.margin.trim() === "" || Number.isNaN(margin)) throw new Error("Sahi margin daalo");
@@ -360,7 +351,7 @@ function toPayload(f: FormState): StockInput {
     amount_type: f.amount_type,
     amount: f.amount.trim(),
     circle_type: f.circle_type,
-    circle: f.circle_type === "MULTIPLE" ? circle : [],
+    circle: f.circle_type === "MULTIPLE" ? f.circle : [],
     margin,
     limit_amount: limit,
     limit_type: f.limit_type,
@@ -369,6 +360,8 @@ function toPayload(f: FormState): StockInput {
 
 function StockFormModal({ circles, onClose }: { circles: Named[]; onClose: () => void }) {
   const [form, setForm] = useState<FormState>(EMPTY);
+  // RANGE bhi API ko MULTIPLE hi jaata hai, ye sirf placeholder ke liye hai
+  const [isRange, setIsRange] = useState(false);
   const set = <K extends keyof FormState>(key: K, value: FormState[K]) =>
     setForm((prev) => ({ ...prev, [key]: value }));
 
@@ -383,6 +376,17 @@ function StockFormModal({ circles, onClose }: { circles: Named[]; onClose: () =>
   const operatorsQuery = useOperatorMappings(form.api_id, form.category_id);
   const operators = operatorsQuery.data ?? [];
 
+  // Available stock wale circles + stock list ke circles, dono milake dropdown
+  // TODO: circles ki list API aane par wahan se lene hain
+  const optionsQuery = useAvailableStockOptions();
+  const circleOptions = useMemo(() => {
+    const map = new Map(circles.map((c) => [c.id, c.name]));
+    for (const r of optionsQuery.data?.data ?? []) {
+      if (!r.circle.all && r.circle.id) map.set(r.circle.id, r.circle.name);
+    }
+    return [...map].map(([id, name]) => ({ id, name })).sort((a, b) => a.name.localeCompare(b.name));
+  }, [circles, optionsQuery.data]);
+
   const save = useCreateStock(onClose);
 
   useEffect(() => {
@@ -390,9 +394,6 @@ function StockFormModal({ circles, onClose }: { circles: Named[]; onClose: () =>
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [onClose]);
-
-  const toggleCircle = (id: string) =>
-    set("circle", form.circle.includes(id) ? form.circle.filter((c) => c !== id) : [...form.circle, id]);
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -467,10 +468,17 @@ function StockFormModal({ circles, onClose }: { circles: Named[]; onClose: () =>
             </Select>
           </div>
 
-          <Select label="Amount Type" value={form.amount_type} onChange={(v) => set("amount_type", v)}>
+          <Select
+            label="Amount Type"
+            value={isRange ? "RANGE" : form.amount_type}
+            onChange={(v) => {
+              setIsRange(v === "RANGE");
+              set("amount_type", v === "RANGE" ? "MULTIPLE" : v);
+            }}
+          >
             <option value="MULTIPLE">MULTIPLE</option>
             <option value="ALL">ALL</option>
-            <option value="MULTIPLE">RANGE</option>
+            <option value="RANGE">RANGE</option>
           </Select>
 
 
@@ -479,7 +487,7 @@ function StockFormModal({ circles, onClose }: { circles: Named[]; onClose: () =>
             name="amount"
             value={form.amount}
             disabled={form.amount_type === "ALL"}
-            placeholder={form.amount_type === "ALL" ? "e.g. 500-1000" : "e.g. 500,1000,1500"}
+            placeholder={form.amount_type === "ALL" ? "ANY AMOUNT" : isRange ? "e.g. 500-1000" : "e.g. 500,1000,1500"}
             onChange={(e) => set("amount", e.target.value)}
           />
 
@@ -491,45 +499,20 @@ function StockFormModal({ circles, onClose }: { circles: Named[]; onClose: () =>
             placeholder="e.g. 2"
             onChange={(e) => set("margin", e.target.value)}
           />
-          <Select label="Circle Type" value={form.circle_type} onChange={(v) => set("circle_type", v)}>
-            <option value="MULTIPLE">MULTIPLE</option>
-            <option value="ALL">ALL</option>
+          
+          <Select
+            label="Circle"
+            value={form.circle[0] ?? ""}
+            disabled={optionsQuery.isLoading}
+            onChange={(v) =>
+              setForm((p) => ({ ...p, circle_type: v ? "MULTIPLE" : "ALL", circle: v ? [v] : [] }))
+            }
+          >
+            <option value="">{optionsQuery.isLoading ? "Loading..." : "All Circles"}</option>
+            {circleOptions.map((c) => (
+              <option key={c.id} value={c.id}>{c.name}</option>
+            ))}
           </Select>
-
-          {form.circle_type === "MULTIPLE" && (
-            <div className="space-y-3 sm:col-span-2">
-              <span className="block text-sm font-medium text-slate-700 dark:text-slate-300">Circles</span>
-              {circles.length > 0 && (
-                <div className="flex flex-wrap gap-2">
-                  {circles.map((c) => {
-                    const on = form.circle.includes(c.id);
-                    return (
-                      <button
-                        key={c.id}
-                        type="button"
-                        onClick={() => toggleCircle(c.id)}
-                        className={cn(
-                          "rounded-lg border px-3 py-1.5 text-xs font-semibold transition",
-                          on
-                            ? "border-brand-600 bg-brand-600 text-white"
-                            : "border-slate-300 text-slate-600 hover:bg-slate-50 dark:border-white/15 dark:text-slate-300 dark:hover:bg-white/5"
-                        )}
-                      >
-                        {c.name}
-                      </button>
-                    );
-                  })}
-                </div>
-              )}
-              <Input
-                label="Aur circle IDs (comma se alag)"
-                name="extraCircles"
-                value={form.extraCircles}
-                placeholder="circle-id-1, circle-id-2"
-                onChange={(e) => set("extraCircles", e.target.value)}
-              />
-            </div>
-          )}
 
           <Input
             label="Limit Amount"

@@ -175,6 +175,7 @@ export default function AvailableStockPage() {
 
   // TODO: operators / circles ki list API aane par dropdown options wahan se lene hain
   const optionsQuery = useAvailableStockOptions();
+
   const { operatorOptions, circleOptions } = useMemo(() => {
     const ops = new Map<string, string>();
     const circles = new Map<string, string>();
@@ -186,6 +187,8 @@ export default function AvailableStockPage() {
       [...m].map(([id, name]) => ({ id, name })).sort((a, b) => a.name.localeCompare(b.name));
     return { operatorOptions: sort(ops), circleOptions: sort(circles) };
   }, [optionsQuery.data]);
+
+  
 
   // Summary current page ke data se
   const summary = useMemo(() => {

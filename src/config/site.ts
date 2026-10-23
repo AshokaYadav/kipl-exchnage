@@ -91,7 +91,7 @@ export const dashboardNav: DashboardNavItem[] = [
     icon: "seller",
     children: [
       { label: "Seller History", href: "/dashboard/seller-history", icon: "sellerHistory" },
-      { label: "Stock", href: "/dashboard/stock", icon: "stock" },
+      { label: "Seller Margin", href: "/dashboard/seller-margin", icon: "stock" },
       { label: "Complain", href: "/dashboard/seller-complain", icon: "complain" },
       { label: "Fake Complain", href: "/dashboard/fake-complain", icon: "fakeComplain" },
       { label: "Wallet Reverse", href: "/dashboard/wallet-reverse", icon: "walletReverse" },
@@ -156,14 +156,14 @@ export const dashboardNav: DashboardNavItem[] = [
     ],
   },
   // Ye abhi kisi dropdown mein nahi hain
-  { label: "Payment", href: "/dashboard/payment", icon: "payment" },
+  // { label: "Payment", href: "/dashboard/payment", icon: "payment" },d
   { label: "Settlement Banks", href: "/dashboard/settlement-banks", icon: "settlementBanks" },
-  { label: "Fix Margin", href: "/dashboard/fix-margin", icon: "margin" },
+  // { label: "Fix Margin", href: "/dashboard/fix-margin", icon: "margin" },
   { label: "Available Stock", href: "/dashboard/available-stock", icon: "availableStock" },
-  { label: "Purchase", href: "/dashboard/purchase", icon: "purchase" },
-  { label: "ReSeller", href: "/dashboard/reseller", icon: "reseller" },
-  { label: "DeveloperZone", href: "/dashboard/developer", icon: "developer" },
-  { label: "Help & More", href: "/dashboard/help", icon: "help" },
+  // { label: "Purchase", href: "/dashboard/purchase", icon: "purchase" },
+  // { label: "ReSeller", href: "/dashboard/reseller", icon: "reseller" },
+  // { label: "DeveloperZone", href: "/dashboard/developer", icon: "developer" },
+  // { label: "Help & More", href: "/dashboard/help", icon: "help" },
 ];
 
 // Dropdown groups ko khol ke saare pages ki flat list (route lookup ke liye)
