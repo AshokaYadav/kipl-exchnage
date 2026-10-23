@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { createColumnHelper } from "@tanstack/react-table";
-import { History, IndianRupee, Layers, RotateCcw, Search, TrendingUp } from "lucide-react";
+import { History, IndianRupee, Layers, MessageSquareWarning, RotateCcw, Search, TrendingUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/ui/data-table";
 import {
@@ -20,6 +20,7 @@ import {
   monthStart,
   today,
 } from "@/components/reports/report-parts";
+import { ComplaintModal } from "@/components/reports/complaint-modal";
 import { cn } from "@/lib/utils";
 import { useBuyerRecharges } from "@/hooks/useHistory";
 import type { BuyerRecharge } from "@/services/history.service";
@@ -28,7 +29,8 @@ const helper = createColumnHelper<BuyerRecharge>();
 
 const STATUSES = ["SUCCESS", "PENDING", "FAILED"];
 
-const columns = [
+// Complaint button ko row chahiye, isliye columns ek function se bante hain
+const buildColumns = (onComplain: (r: BuyerRecharge) => void) => [
   helper.accessor("createdAt", {
     header: "Date",
     cell: (i) => <span className="whitespace-nowrap">{formatDateTime(i.getValue())}</span>,
@@ -101,6 +103,15 @@ const columns = [
       );
     },
   }),
+  helper.display({
+    id: "action",
+    header: "Action",
+    cell: (i) => (
+      <Button variant="outline" className="h-8 whitespace-nowrap px-3 text-xs" onClick={() => onComplain(i.row.original)}>
+        <MessageSquareWarning className="size-3.5" /> Complaint
+      </Button>
+    ),
+  }),
 ];
 
 export default function RechargeHistoryPage() {
@@ -111,6 +122,8 @@ export default function RechargeHistoryPage() {
   const [mobile, setMobile] = useState("");
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(20);
+  const [complainFor, setComplainFor] = useState<BuyerRecharge | null>(null);
+  const columns = useMemo(() => buildColumns(setComplainFor), []);
 
   const { data, isLoading, isError, isFetching, refetch } = useBuyerRecharges({ page, limit, status, from, to, mobile });
   const rows = useMemo(() => data?.data ?? [], [data]);
@@ -223,6 +236,8 @@ export default function RechargeHistoryPage() {
           }}
         />
       </section>
+
+      {complainFor && <ComplaintModal recharge={complainFor} onClose={() => setComplainFor(null)} />}
     </div>
   );
 }

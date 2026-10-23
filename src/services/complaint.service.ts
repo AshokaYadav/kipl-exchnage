@@ -62,3 +62,11 @@ export const getComplaints = async (params: ComplaintParams): Promise<Paged<Comp
     data: data?.data ?? [],
   };
 };
+
+export type ComplaintInput = { recharge_id: string; message: string };
+
+// ➕ Recharge par nayi complaint
+export const createComplaint = async (input: ComplaintInput): Promise<Complaint> => {
+  const res = await axiosInstance.post("/apis/exchange/complaint", input);
+  return unwrap<Complaint>(res.data);
+};
