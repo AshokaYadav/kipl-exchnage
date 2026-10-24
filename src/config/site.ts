@@ -95,6 +95,7 @@ export const dashboardNav: DashboardNavItem[] = [
       { label: "Complain", href: "/dashboard/seller-complain", icon: "complain" },
       { label: "Fake Complain", href: "/dashboard/fake-complain", icon: "fakeComplain" },
       { label: "Wallet Reverse", href: "/dashboard/wallet-reverse", icon: "walletReverse" },
+      { label: "My APIs", href: "/dashboard/apis", icon: "apis" },
     ],
   },
   {
@@ -142,7 +143,7 @@ export const dashboardNav: DashboardNavItem[] = [
     href: "/dashboard/helping",
     icon: "helping",
     children: [
-      { label: "My APIs", href: "/dashboard/apis", icon: "apis" },
+      // { label: "My APIs", href: "/dashboard/apis", icon: "apis" },
       { label: "Add API Request", href: "/dashboard/add-api-request", icon: "addApiRequest" },
     ],
   },
@@ -157,7 +158,8 @@ export const dashboardNav: DashboardNavItem[] = [
   },
   // Ye abhi kisi dropdown mein nahi hain
   // { label: "Payment", href: "/dashboard/payment", icon: "payment" },d
-  { label: "Settlement Banks", href: "/dashboard/settlement-banks", icon: "settlementBanks" },
+  // Settlement Banks ab Settlement page ke andar hai
+  // { label: "Settlement Banks", href: "/dashboard/settlement-banks", icon: "settlementBanks" },
   // { label: "Fix Margin", href: "/dashboard/fix-margin", icon: "margin" },
   { label: "Available Stock", href: "/dashboard/available-stock", icon: "availableStock" },
   // { label: "Purchase", href: "/dashboard/purchase", icon: "purchase" },

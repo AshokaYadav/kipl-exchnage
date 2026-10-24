@@ -9,6 +9,7 @@ export default function DownloadBuyerLedgerPage() {
       title="Buyer Ledger"
       subtitle="Purchase (buyer) ledger ki CSV download karo"
       fileName="purchase-ledger"
+      singleDate
       select={{ key: "type", label: "Type", options: ["RECHARGE_DEBIT", "RECHARGE_REFUND", "RECHARGE_COMMISSION", "CREDIT"] }}
     />
   );

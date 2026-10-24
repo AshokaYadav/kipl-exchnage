@@ -9,6 +9,7 @@ export default function DownloadBuyerReportPage() {
       title="Buyer Report"
       subtitle="Purchase (buyer) recharges ki CSV download karo"
       fileName="purchase-report"
+      singleDate
       select={{ key: "status", label: "Status", options: ["SUCCESS", "FAILED", "PENDING"] }}
       text={{ key: "mobile", label: "Mobile", placeholder: "9876543210" }}
     />

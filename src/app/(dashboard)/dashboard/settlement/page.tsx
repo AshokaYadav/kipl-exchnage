@@ -1,7 +1,6 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import Link from "next/link";
 import { createColumnHelper } from "@tanstack/react-table";
 import { Ban, Banknote, Building2, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -19,6 +18,7 @@ import {
   inr,
 } from "@/components/reports/report-parts";
 import { cn } from "@/lib/utils";
+import { SettlementBanksSection } from "@/components/settlement/settlement-banks";
 import { useSettlementBanks } from "@/hooks/useSettlementBanks";
 import { useCancelSettlement, useCreateSettlement, useSettlements } from "@/hooks/useSettlement";
 import type { SettlementBank, SettlementRequest } from "@/services/settlement.service";
@@ -49,10 +49,7 @@ function SettlementForm({ banks, banksLoading }: { banks: SettlementBank[]; bank
       <div className="grid place-items-center rounded-2xl border border-dashed border-slate-300 px-6 py-10 text-center dark:border-white/15">
         <Building2 className="size-8 text-slate-400" />
         <p className="mt-3 font-semibold">Pehle apna bank add karo</p>
-        <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">Settlement usi bank mein aayega</p>
-        <Link href="/dashboard/settlement-banks" className="mt-4 text-sm font-semibold text-brand-700 underline dark:text-brand-200">
-          Settlement Banks par jao
-        </Link>
+        <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">Upar &quot;Mere Banks&quot; mein bank add karo — settlement usi mein aayega</p>
       </div>
     );
   }
@@ -193,10 +190,25 @@ export default function SettlementPage() {
 
   return (
     <div className="space-y-6">
-      <PageHeader icon={<Banknote className="size-5" />} title="Settlement" subtitle="Wallet se paisa apne bank mein mangwao" />
+      <PageHeader icon={<Banknote className="size-5" />} title="Settlement" subtitle="Apne bank add karo aur wallet se paisa mangwao" />
+
+      <SettlementBanksSection
+        data={banks}
+        isLoading={banksQuery.isLoading}
+        isError={banksQuery.isError}
+        refetch={() => banksQuery.refetch()}
+      />
 
       <section className="rounded-3xl border border-slate-200 bg-white p-5 dark:border-white/10 dark:bg-slate-900">
-        <h2 className="mb-4 font-bold">Nayi Settlement Request</h2>
+        <div className="mb-4 flex items-center gap-3">
+          <span className="grid size-9 place-items-center rounded-xl bg-brand-50 text-brand-700 dark:bg-brand-600/20 dark:text-brand-200">
+            <Send className="size-4" />
+          </span>
+          <div>
+            <h2 className="font-bold">Nayi Settlement Request</h2>
+            <p className="text-xs text-slate-500 dark:text-slate-400">Bank chuno, amount daalo aur request bhejo</p>
+          </div>
+        </div>
         <SettlementForm banks={banks} banksLoading={banksQuery.isLoading} />
       </section>
 

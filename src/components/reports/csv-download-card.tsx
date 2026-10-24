@@ -20,17 +20,19 @@ type Props = {
   fileName: string;
   select?: SelectFilter;
   text?: TextFilter;
+  // Sirf ek date — wahi from aur to dono mein jaati hai
+  singleDate?: boolean;
 };
 
-export function CsvDownloadCard({ kind, title, subtitle, fileName, select, text }: Props) {
-  const [from, setFrom] = useState(monthStart);
+export function CsvDownloadCard({ kind, title, subtitle, fileName, select, text, singleDate }: Props) {
+  const [from, setFrom] = useState(singleDate ? today : monthStart);
   const [to, setTo] = useState(today);
   const [selected, setSelected] = useState("");
   const [typed, setTyped] = useState("");
   const [busy, setBusy] = useState(false);
 
   const onDownload = async () => {
-    if (!from || !to) return toast.error("From aur To date dono chahiye");
+    if (!from || !to) return toast.error(singleDate ? "Date chahiye" : "From aur To date dono chahiye");
     if (from > to) return toast.error("From date, To date se pehle honi chahiye");
 
     const params: DownloadParams = { from, to };
@@ -54,12 +56,29 @@ export function CsvDownloadCard({ kind, title, subtitle, fileName, select, text 
 
       <section className="rounded-3xl border border-slate-200 bg-white dark:border-white/10 dark:bg-slate-900">
         <div className="flex flex-wrap items-end gap-3 px-5 py-5">
-          <Field label="From">
-            <input type="date" className={fieldCls} value={from} max={to || undefined} onChange={(e) => setFrom(e.target.value)} />
-          </Field>
-          <Field label="To">
-            <input type="date" className={fieldCls} value={to} min={from || undefined} max={today()} onChange={(e) => setTo(e.target.value)} />
-          </Field>
+          {singleDate ? (
+            <Field label="Date">
+              <input
+                type="date"
+                className={fieldCls}
+                value={from}
+                max={today()}
+                onChange={(e) => {
+                  setFrom(e.target.value);
+                  setTo(e.target.value);
+                }}
+              />
+            </Field>
+          ) : (
+            <>
+              <Field label="From">
+                <input type="date" className={fieldCls} value={from} max={to || undefined} onChange={(e) => setFrom(e.target.value)} />
+              </Field>
+              <Field label="To">
+                <input type="date" className={fieldCls} value={to} min={from || undefined} max={today()} onChange={(e) => setTo(e.target.value)} />
+              </Field>
+            </>
+          )}
           {select && (
             <Field label={select.label}>
               <select className={fieldCls} value={selected} onChange={(e) => setSelected(e.target.value)}>
