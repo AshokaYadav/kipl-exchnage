@@ -15,7 +15,6 @@ import {
   StatusBadge,
   SummaryCard,
   fieldCls,
-  formatDateTime,
   inr,
   monthStart,
   today,
@@ -26,10 +25,22 @@ import type { SellerHistoryRow } from "@/services/history.service";
 
 const helper = createColumnHelper<SellerHistoryRow>();
 
+const right = (label: string) => <span className="block text-right">{label}</span>;
+
 const columns = [
   helper.accessor("date", {
     header: "Date",
-    cell: (i) => <span className="whitespace-nowrap">{formatDateTime(i.getValue())}</span>,
+    cell: (i) => {
+      const d = new Date(i.getValue());
+      return (
+        <div className="whitespace-nowrap">
+          <p className="font-semibold text-slate-900 dark:text-white">
+            {d.toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" })}
+          </p>
+          <p className="text-xs text-slate-500 dark:text-slate-400">{d.toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" })}</p>
+        </div>
+      );
+    },
   }),
   helper.display({
     id: "operator",
@@ -40,8 +51,8 @@ const columns = [
         <div className="flex items-center gap-3">
           <OperatorLogo name={r?.operator?.name} imageUrl={r?.operator?.image_url || null} />
           <div>
-            <p className="font-semibold">{r?.mobile ?? "—"}</p>
-            <p className="text-xs text-slate-500 dark:text-slate-400">
+            <p className="font-bold tracking-wide text-slate-900 dark:text-white">{r?.mobile ?? "—"}</p>
+            <p className="text-xs font-medium text-slate-500 dark:text-slate-400">
               {r?.operator?.name}
               {r?.circle?.name && ` · ${r.circle.name}`}
             </p>
@@ -53,23 +64,30 @@ const columns = [
   helper.display({
     id: "api",
     header: "API",
-    cell: (i) => <span className="font-medium">{i.row.original.api?.name ?? "—"}</span>,
-  }),
-  helper.accessor("amount", {
-    header: "Amount",
-    cell: (i) => <span className="font-semibold">{inr(i.getValue())}</span>,
-  }),
-  helper.accessor("margin_percent", {
-    header: "Margin",
     cell: (i) => (
-      <span className="text-emerald-600 dark:text-emerald-400">
-        {i.getValue()}% <span className="text-xs text-slate-500 dark:text-slate-400">({inr(i.row.original.margin_amount)})</span>
+      <span className="inline-flex whitespace-nowrap rounded-lg bg-brand-50 px-2.5 py-1 text-xs font-semibold text-brand-700 dark:bg-brand-600/20 dark:text-brand-200">
+        {i.row.original.api?.name ?? "—"}
       </span>
     ),
   }),
+  helper.accessor("amount", {
+    header: () => right("Amount"),
+    cell: (i) => <p className="text-right font-bold tabular-nums text-slate-900 dark:text-white">{inr(i.getValue())}</p>,
+  }),
+  helper.accessor("margin_percent", {
+    header: () => right("Margin"),
+    cell: (i) => (
+      <div className="text-right">
+        <span className="inline-flex rounded-full bg-emerald-50 px-2 py-0.5 text-xs font-bold text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-300">
+          {i.getValue()}%
+        </span>
+        <p className="mt-0.5 text-xs font-medium tabular-nums text-slate-500 dark:text-slate-400">{inr(i.row.original.margin_amount)}</p>
+      </div>
+    ),
+  }),
   helper.accessor("payout", {
-    header: "Payout",
-    cell: (i) => <span className="font-semibold">{inr(i.getValue())}</span>,
+    header: () => right("Payout"),
+    cell: (i) => <p className="text-right font-extrabold tabular-nums text-emerald-600 dark:text-emerald-400">{inr(i.getValue())}</p>,
   }),
   helper.accessor("status", {
     header: "Status",
@@ -81,8 +99,10 @@ const columns = [
     cell: (i) => {
       const r = i.row.original.recharge;
       return (
-        <div className="text-xs">
-          <p className="font-mono">{r?.order_id ?? "—"}</p>
+        <div className="space-y-0.5 text-xs">
+          <p className="inline-block rounded-md bg-slate-100 px-1.5 py-0.5 font-mono font-semibold text-slate-800 dark:bg-white/10 dark:text-slate-100">
+            {r?.order_id ?? "—"}
+          </p>
           <p className="text-slate-500 dark:text-slate-400">{r?.client_ref ?? "—"}</p>
           {r?.op_ref && <p className="text-slate-500 dark:text-slate-400">Op: {r.op_ref}</p>}
         </div>
@@ -166,13 +186,20 @@ export default function SellerHistoryPage() {
           </Button>
         </div>
 
-        <div className={cn("p-1 transition-opacity", isFetching && !isLoading && "opacity-60")}>
+        <div className={cn("p-4 transition-opacity", isFetching && !isLoading && "opacity-60")}>
           {isLoading ? (
             <SkeletonRows rows={Math.min(limit, 8)} />
           ) : isError && !data ? (
             <ErrorBox what="Seller history" onRetry={() => refetch()} />
           ) : (
-            <DataTable columns={columns} data={rows} getRowId={(r) => r.id} emptyText="Is range mein koi entry nahi hai" />
+            <DataTable
+              columns={columns}
+              data={rows}
+              getRowId={(r) => r.id}
+              emptyText="Is range mein koi entry nahi hai"
+              bordered
+              className="max-h-[max(320px,calc(100vh-24rem))]"
+            />
           )}
         </div>
 
