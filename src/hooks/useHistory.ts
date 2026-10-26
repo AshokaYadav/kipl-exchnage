@@ -6,9 +6,12 @@ import { toast } from "sonner";
 import { getErrorMessage } from "@/lib/axios";
 import {
   getBuyerDaybook,
+  getBuyerLedger,
   getBuyerRecharges,
+  getSellerDaybook,
   getSellerHistory,
   getSellerLedger,
+  type BuyerLedgerParams,
   type BuyerRechargeParams,
   type SellerHistoryParams,
   type SellerLedgerParams,
@@ -43,6 +46,17 @@ export function useBuyerDaybook(params: { from?: string; to?: string }) {
   return query;
 }
 
+// 📘 Seller daybook
+export function useSellerDaybook(params: { from?: string; to?: string }) {
+  const query = useQuery({
+    queryKey: ["seller-daybook", params],
+    queryFn: () => getSellerDaybook(params),
+    placeholderData: keepPreviousData,
+  });
+  useErrorToast(query);
+  return query;
+}
+
 // 💸 Seller history
 export function useSellerHistory(params: SellerHistoryParams) {
   const query = useQuery({
@@ -59,6 +73,17 @@ export function useSellerLedger(params: SellerLedgerParams) {
   const query = useQuery({
     queryKey: ["seller-ledger", params],
     queryFn: () => getSellerLedger(params),
+    placeholderData: keepPreviousData,
+  });
+  useErrorToast(query);
+  return query;
+}
+
+// 📕 Buyer ledger
+export function useBuyerLedger(params: BuyerLedgerParams) {
+  const query = useQuery({
+    queryKey: ["buyer-ledger", params],
+    queryFn: () => getBuyerLedger(params),
     placeholderData: keepPreviousData,
   });
   useErrorToast(query);

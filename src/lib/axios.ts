@@ -42,10 +42,13 @@ axiosInstance.interceptors.response.use(
 export function getErrorMessage(error: unknown): string {
   if (axios.isAxiosError(error)) {
     const data = error.response?.data as
-      | { message?: string; error?: string; msg?: string }
+      | { message?: string; error?: string; msg?: string; err?: string }
       | undefined;
-    if (data?.message) return data.message;
+
+      console.log("[axios-error] response:", error.response);
+      if(data?.err) return data.err;
     if (data?.error) return data.error;
+    if (data?.message) return data.message;
     if (data?.msg) return data.msg;
     if (!error.response) return "Network error — server tak nahi pahunch paaye (CORS / internet check karo).";
     return `Request failed (${error.response.status})`;

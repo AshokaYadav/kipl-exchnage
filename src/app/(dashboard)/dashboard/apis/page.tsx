@@ -31,13 +31,18 @@ export default function ApisPage() {
 
   const columns = useMemo(
     () => [
+      apiHelper.display({
+        id: "sr",
+        header: "Sr No",
+        cell: (i) => i.table.getRowModel().rows.findIndex((r) => r.id === i.row.id) + 1,
+      }),
       apiHelper.accessor("apicode", { header: "Code" }),
       apiHelper.accessor("name", {
         header: "Name",
         cell: (i) => <span className="font-semibold">{i.getValue()}</span>,
       }),
-      apiHelper.accessor("admin-status", { header: "Admin Status" }),
-      apiHelper.accessor("why-deactivated", { header: "Why Deactivated" }),
+      apiHelper.accessor("admin_status", { header: "Admin Status" }),
+      apiHelper.accessor("admin_reason", { header: "Why Deactivated" }),
       // apiHelper.accessor("type", { header: "Type" }),
       // apiHelper.accessor("method", { header: "Method" }),
       // apiHelper.accessor("url", {
@@ -57,16 +62,27 @@ export default function ApisPage() {
           const active = Boolean(i.getValue());
           return (
             <button
+              role="switch"
+              aria-checked={active}
               onClick={() => toggleStatus.mutate({ id, status: active ? 0 : 1 })}
               disabled={togglingId === id}
               title={active ? "Inactive karo" : "Active karo"}
-              className={`rounded-md px-2 py-0.5 text-xs font-semibold disabled:opacity-50 ${
-                active
-                  ? "bg-emerald-50 text-emerald-700 hover:bg-emerald-100 dark:bg-emerald-500/15 dark:text-emerald-300"
-                  : "bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-white/10 dark:text-slate-300"
-              }`}
+              className="inline-flex items-center gap-2 text-xs font-semibold disabled:opacity-50"
             >
-              {active ? "Active" : "Inactive"}
+              <span
+                className={`relative inline-flex h-5 w-9 shrink-0 rounded-full transition-colors ${
+                  active ? "bg-emerald-500" : "bg-slate-300 dark:bg-white/20"
+                }`}
+              >
+                <span
+                  className={`absolute top-0.5 size-4 rounded-full bg-white shadow transition-transform ${
+                    active ? "translate-x-4" : "translate-x-0.5"
+                  }`}
+                />
+              </span>
+              <span className={active ? "text-emerald-700 dark:text-emerald-300" : "text-slate-500 dark:text-slate-400"}>
+                {active ? "Active" : "Inactive"}
+              </span>
             </button>
           );
         },

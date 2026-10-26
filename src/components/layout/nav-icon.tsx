@@ -78,6 +78,7 @@ const map = {
   callback: Webhook,
   helping: LifeBuoy,
   addApiRequest: CirclePlus,
+  apiSettings: KeyRound,
   invoice: ReceiptText,
 } as const;
 

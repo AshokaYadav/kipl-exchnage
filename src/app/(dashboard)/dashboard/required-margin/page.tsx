@@ -347,6 +347,7 @@ function MarginFormModal({ onClose }: { onClose: () => void }) {
     queryFn: () => getOperatorsByCategory(categoryId),
     enabled: !!categoryId,
   });
+
   const operators = operatorsQuery.data ?? [];
 
   const save = useMutation({
@@ -356,7 +357,10 @@ function MarginFormModal({ onClose }: { onClose: () => void }) {
       queryClient.invalidateQueries({ queryKey: ["required-margin"] });
       onClose();
     },
-    onError: (err) => toast.error(getErrorMessage(err)),
+    onError: (err) => {
+      // console.error("Required margin add error", err);
+      toast.error(getErrorMessage(err))
+    },
   });
 
   const submit = (e: React.FormEvent) => {

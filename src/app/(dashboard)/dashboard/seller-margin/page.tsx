@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { createColumnHelper } from "@tanstack/react-table";
-import { Boxes, Pencil, Plus, Trash2, X } from "lucide-react";
+import { Boxes, Check, ChevronDown, Pencil, Plus, Trash2, X } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/ui/data-table";
@@ -307,6 +307,80 @@ function Select({
   );
 }
 
+// Circles multi-select — kuch na chuno toh All Circles
+function CircleMultiSelect({
+  options,
+  value,
+  loading,
+  onChange,
+}: {
+  options: Named[];
+  value: string[];
+  loading?: boolean;
+  onChange: (ids: string[]) => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  // Bahar click karo toh band
+  useEffect(() => {
+    if (!open) return;
+    const onDown = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    };
+    document.addEventListener("mousedown", onDown);
+    return () => document.removeEventListener("mousedown", onDown);
+  }, [open]);
+
+  const toggle = (id: string) => onChange(value.includes(id) ? value.filter((v) => v !== id) : [...value, id]);
+  const names = options.filter((o) => value.includes(o.id)).map((o) => o.name);
+  const text = loading ? "Loading..." : names.length === 0 ? "All Circles" : names.length <= 2 ? names.join(", ") : `${names.length} circles selected`;
+
+  return (
+    <div className="block" ref={ref}>
+      <span className="mb-1.5 block text-sm font-medium text-slate-700 dark:text-slate-300">Circle</span>
+      <div className="relative">
+        <button
+          type="button"
+          disabled={loading}
+          onClick={() => setOpen((o) => !o)}
+          className={cn(selectCls, "flex items-center justify-between gap-2 text-left")}
+        >
+          <span className="truncate">{text}</span>
+          <ChevronDown className={cn("size-4 shrink-0 text-slate-400 transition", open && "rotate-180")} />
+        </button>
+        {open && (
+          <div className="absolute z-10 mt-1 max-h-60 w-full overflow-y-auto rounded-xl border border-slate-200 bg-white p-1 shadow-lg dark:border-white/10 dark:bg-slate-900">
+            <button
+              type="button"
+              onClick={() => onChange([])}
+              className="flex w-full items-center justify-between rounded-lg px-3 py-2 text-sm hover:bg-slate-100 dark:hover:bg-white/10"
+            >
+              All Circles
+              {value.length === 0 && <Check className="size-4 text-brand-600" />}
+            </button>
+            {options.length === 0 && <p className="px-3 py-2 text-xs text-slate-500">Koi circle nahi mila</p>}
+            {options.map((c) => (
+              <label
+                key={c.id}
+                className="flex cursor-pointer items-center gap-2 rounded-lg px-3 py-2 text-sm hover:bg-slate-100 dark:hover:bg-white/10"
+              >
+                <input
+                  type="checkbox"
+                  className="size-4 accent-brand-600"
+                  checked={value.includes(c.id)}
+                  onChange={() => toggle(c.id)}
+                />
+                {c.name}
+              </label>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 type FormState = {
   api_id: string;
   category_id: string;
@@ -500,19 +574,12 @@ function StockFormModal({ circles, onClose }: { circles: Named[]; onClose: () =>
             onChange={(e) => set("margin", e.target.value)}
           />
           
-          <Select
-            label="Circle"
-            value={form.circle[0] ?? ""}
-            disabled={optionsQuery.isLoading}
-            onChange={(v) =>
-              setForm((p) => ({ ...p, circle_type: v ? "MULTIPLE" : "ALL", circle: v ? [v] : [] }))
-            }
-          >
-            <option value="">{optionsQuery.isLoading ? "Loading..." : "All Circles"}</option>
-            {circleOptions.map((c) => (
-              <option key={c.id} value={c.id}>{c.name}</option>
-            ))}
-          </Select>
+          <CircleMultiSelect
+            options={circleOptions}
+            value={form.circle}
+            loading={optionsQuery.isLoading}
+            onChange={(ids) => setForm((p) => ({ ...p, circle_type: ids.length ? "MULTIPLE" : "ALL", circle: ids }))}
+          />
 
           <Input
             label="Limit Amount"

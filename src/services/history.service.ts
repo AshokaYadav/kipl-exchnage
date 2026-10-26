@@ -64,6 +64,32 @@ export type DaybookRow = {
 
 export type Daybook = { from: string; to: string; data: DaybookRow[] };
 
+// ───────────── Seller daybook ─────────────
+export type SellerDaybookRow = {
+  date: string;
+  opening_balance: number;
+  closing_balance: number;
+  payout_credit: number;
+  reversal: number;
+  net_earning: number;
+  margin_given: number;
+  settlement_hold: number;
+  settlement_refund: number;
+  settlement_paid: number;
+  complaint_hold: number;
+  complaint_release: number;
+  complaint_refund: number;
+  sales: {
+    total: number;
+    success: number;
+    failed: number;
+    pending: number;
+    success_amount: number;
+  };
+};
+
+export type SellerDaybook = { from: string; to: string; data: SellerDaybookRow[] };
+
 // ───────────── Seller history ─────────────
 export type SellerHistoryRow = {
   id: string;
@@ -113,6 +139,35 @@ export type SellerLedgerRow = {
 
 export type SellerLedgerParams = { page?: number; limit?: number; type?: string; from?: string; to?: string };
 
+// ───────────── Buyer ledger ─────────────
+export type BuyerLedgerType = "RECHARGE_COMMISSION" | "RECHARGE_DEBIT" | "CREDIT" | "RECHARGE_REFUND" | (string & {});
+
+export type BuyerLedgerRow = {
+  id: string;
+  date: string;
+  type: BuyerLedgerType;
+  status: RechargeStatus;
+  direction: "CREDIT" | "DEBIT" | (string & {});
+  amount: number;
+  delta: number;
+  opening_balance: number;
+  closing_balance: number;
+  msg: string | null;
+  recharge: {
+    id: string;
+    mobile: string;
+    price: number;
+    status: RechargeStatus;
+    order_id: string | null;
+    client_ref: string | null;
+    op_ref: string | null;
+    operator: { id: string; name: string; image_url: string | null };
+    circle: { id: string; name: string };
+  } | null;
+};
+
+export type BuyerLedgerParams = { page?: number; limit?: number; type?: string; from?: string; to?: string };
+
 // err aaye toh throw karo, taaki react-query error state mein jaaye
 function unwrap<T>(body: ApiResponse<T>): T {
   if (body?.err) throw new Error(body.message ?? "Request fail ho gayi");
@@ -147,6 +202,12 @@ export const getBuyerDaybook = async (params: { from?: string; to?: string } = {
   return unwrap<Daybook>(res.data)?.data ?? [];
 };
 
+// 📘 Seller daybook — din-wise seller ka hisaab
+export const getSellerDaybook = async (params: { from?: string; to?: string } = {}): Promise<SellerDaybookRow[]> => {
+  const res = await axiosInstance.get("/apis/exchange/seller-daybook", { params: clean(params) });
+  return unwrap<SellerDaybook>(res.data)?.data ?? [];
+};
+
 // 💸 Seller history — meri API se hue recharges
 export const getSellerHistory = async (params: SellerHistoryParams = {}): Promise<Paged<SellerHistoryRow>> => {
   const page = params.page ?? 1;
@@ -161,4 +222,12 @@ export const getSellerLedger = async (params: SellerLedgerParams = {}): Promise<
   const limit = params.limit ?? 20;
   const res = await axiosInstance.get("/apis/exchange/seller-ledger", { params: clean({ ...params, page, limit }) });
   return toPaged(unwrap<Paged<SellerLedgerRow>>(res.data), page, limit);
+};
+
+// 📕 Buyer ledger — wallet mein debit / refund / commission ki entries
+export const getBuyerLedger = async (params: BuyerLedgerParams = {}): Promise<Paged<BuyerLedgerRow>> => {
+  const page = params.page ?? 1;
+  const limit = params.limit ?? 20;
+  const res = await axiosInstance.get("/apis/exchange/buyer-ledger", { params: clean({ ...params, page, limit }) });
+  return toPaged(unwrap<Paged<BuyerLedgerRow>>(res.data), page, limit);
 };
