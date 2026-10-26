@@ -10,7 +10,7 @@ import { DataTable } from "@/components/ui/data-table";
 import { Input } from "@/components/ui/input";
 import { axiosInstance, getErrorMessage } from "@/lib/axios";
 import { cn } from "@/lib/utils";
-import { useApis, useCategories, useOperatorMappings } from "@/hooks/useApis";
+import { useCategories } from "@/hooks/useApis";
 import { DEMO_CATEGORY, type Category } from "@/services/apis.service";
 
 // Backend ka common response: { err, message, data }
@@ -41,6 +41,8 @@ type RequiredMargin = {
   available_stock_at_margin?: AvailableStock;
 };
 
+type Operator = Named & { category_id: string; image_url: string | null; status: string };
+
 type RequiredMarginInput = { operator_id: string; margin: number; status: boolean };
 type RequiredMarginUpdateInput = { margin: number; status: boolean; fix_margin: boolean };
 
@@ -53,6 +55,12 @@ function unwrap<T>(body: ApiResponse<T>): T {
 // 📊 Required margin setting list
 const getRequiredMargin = async (): Promise<RequiredMargin[]> => {
   const res = await axiosInstance.get<ApiResponse<RequiredMargin[]>>("/apis/exchange/required-margin");
+  return unwrap(res.data) ?? [];
+};
+
+// 📡 Category ke saare operators
+const getOperatorsByCategory = async (categoryId: string): Promise<Operator[]> => {
+  const res = await axiosInstance.get<ApiResponse<Operator[]>>(`/operator/all-byCategory/${categoryId}`);
   return unwrap(res.data) ?? [];
 };
 
@@ -322,21 +330,23 @@ function Modal({
 
 function MarginFormModal({ onClose }: { onClose: () => void }) {
   const queryClient = useQueryClient();
-  const [apiId, setApiId] = useState("");
   const [categoryId, setCategoryId] = useState("");
   const [operatorId, setOperatorId] = useState("");
   const [margin, setMargin] = useState("");
   const [status, setStatus] = useState(true);
 
-  const apisQuery = useApis();
   const categoriesQuery = useCategories();
   // Categories API fail ho toh DEMO category se kaam chalate hain
   const categories = useMemo<Category[]>(
     () => (categoriesQuery.isError ? [DEMO_CATEGORY] : categoriesQuery.data ?? []),
     [categoriesQuery.isError, categoriesQuery.data]
   );
-  // Operator list ki alag API nahi hai — API + category ke mapping se operators milte hain
-  const operatorsQuery = useOperatorMappings(apiId, categoryId);
+
+  const operatorsQuery = useQuery({
+    queryKey: ["operators-by-category", categoryId],
+    queryFn: () => getOperatorsByCategory(categoryId),
+    enabled: !!categoryId,
+  });
   const operators = operatorsQuery.data ?? [];
 
   const save = useMutation({
@@ -371,21 +381,6 @@ function MarginFormModal({ onClose }: { onClose: () => void }) {
       }
     >
       <Select
-        label="API"
-        value={apiId}
-        disabled={apisQuery.isLoading}
-        onChange={(v) => {
-          setApiId(v);
-          setOperatorId("");
-        }}
-      >
-        <option value="">{apisQuery.isLoading ? "Loading..." : "Select API"}</option>
-        {(apisQuery.data ?? []).map((a) => (
-          <option key={a.id} value={a.id}>{a.name}</option>
-        ))}
-      </Select>
-
-      <Select
         label="Category"
         value={categoryId}
         disabled={categoriesQuery.isLoading}
@@ -403,12 +398,12 @@ function MarginFormModal({ onClose }: { onClose: () => void }) {
       <Select
         label="Operator"
         value={operatorId}
-        disabled={!apiId || !categoryId || operatorsQuery.isFetching}
+        disabled={!categoryId || operatorsQuery.isFetching}
         onChange={setOperatorId}
       >
         <option value="">
-          {!apiId || !categoryId
-            ? "Pehle API aur Category chuno"
+          {!categoryId
+            ? "Pehle Category chuno"
             : operatorsQuery.isFetching
               ? "Loading..."
               : operators.length
@@ -416,7 +411,7 @@ function MarginFormModal({ onClose }: { onClose: () => void }) {
                 : "Koi operator nahi mila"}
         </option>
         {operators.map((o) => (
-          <option key={o.operator_id} value={o.operator_id}>{o.operator?.name ?? o.operator_id}</option>
+          <option key={o.id} value={o.id}>{o.name}</option>
         ))}
       </Select>
 
