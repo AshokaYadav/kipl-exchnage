@@ -83,29 +83,50 @@ export default function StockPage() {
           return (
             <div>
               <p className="font-semibold">{i.getValue()}%</p>
-              <p className="text-xs text-slate-400">
+              {/* <p className="text-xs text-slate-400">
                 Mine {s.margin} + Admin {s.admin_margin ?? 0}
-              </p>
+              </p> */}
             </div>
           );
         },
       }),
+
+
+      // stockHelper.accessor("limit_amount", {
+      //   header: "Limit",
+      //   cell: (i) => {
+      //     const s = i.row.original;
+      //     return (
+      //       <div>
+      //         <p className="font-semibold">
+      //           ₹{i.getValue()} <span className="text-xs font-normal text-slate-400">/ {s.limit_type}</span>
+      //         </p>
+      //         <p className="text-xs text-slate-500 dark:text-slate-400">
+      //           Used ₹{s.used_amount ?? 0} · Bacha ₹{s.remaining_amount ?? i.getValue()}
+      //         </p>
+      //       </div>
+      //     );
+      //   },
+      // }),
+
+
       stockHelper.accessor("limit_amount", {
-        header: "Limit",
-        cell: (i) => {
-          const s = i.row.original;
-          return (
-            <div>
-              <p className="font-semibold">
-                ₹{i.getValue()} <span className="text-xs font-normal text-slate-400">/ {s.limit_type}</span>
-              </p>
-              <p className="text-xs text-slate-500 dark:text-slate-400">
-                Used ₹{s.used_amount ?? 0} · Bacha ₹{s.remaining_amount ?? i.getValue()}
-              </p>
-            </div>
-          );
-        },
-      }),
+  header: "Limit",
+  cell: (i) => {
+    const s = i.row.original;
+    return (
+      <span className="whitespace-nowrap">
+        <span className="font-semibold">₹{i.getValue()}</span>
+        <span className="text-xs text-slate-400"> / {s.limit_type}</span>
+        <span className="text-xs text-slate-500 dark:text-slate-400">
+          {" "}· Used ₹{s.used_amount ?? 0} · Bacha ₹{s.remaining_amount ?? i.getValue()}
+        </span>
+      </span>
+    );
+  },
+}),
+
+
       stockHelper.accessor("status", {
         header: "Status",
         cell: (i) =>
@@ -578,7 +599,7 @@ function StockFormModal({ circles, onClose }: { circles: Named[]; onClose: () =>
             options={circleOptions}
             value={form.circle}
             loading={optionsQuery.isLoading}
-            onChange={(ids) => setForm((p) => ({ ...p, circle_type: ids.length ? "MULTIPLE" : "ALL", circle: ids }))}
+            onChange={(ids) => setForm((p) => ({ ...p, circle_type: ids.length ? "MULTIPLE" : "ALLCIRCLE", circle: ids }))}
           />
 
           <Input

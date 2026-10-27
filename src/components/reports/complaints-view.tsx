@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { createColumnHelper } from "@tanstack/react-table";
-import { Clock, IndianRupee, MessageSquareWarning, RotateCcw, Undo2 } from "lucide-react";
+import { Clock, MessageSquareWarning, RotateCcw, Search, Undo2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/ui/data-table";
 import {
@@ -17,9 +17,12 @@ import {
   fieldCls,
   formatDateTime,
   inr,
+  monthStart,
+  today,
 } from "@/components/reports/report-parts";
 import { cn } from "@/lib/utils";
 import { useComplaints } from "@/hooks/useComplaints";
+import { useOperatorCircleOptions } from "@/hooks/useAvailableStock";
 import type { Complaint, ComplaintParams } from "@/services/complaint.service";
 
 const helper = createColumnHelper<Complaint>();
@@ -130,11 +133,26 @@ const COPY = {
 } as const;
 
 export function ComplaintsView({ as, title = "Complain" }: { as: ComplaintParams["as"]; title?: string }) {
+  const [from, setFrom] = useState(monthStart);
+  const [to, setTo] = useState(today);
   const [status, setStatus] = useState("");
+  const [operatorId, setOperatorId] = useState("");
+  const [mobileDraft, setMobileDraft] = useState("");
+  const [mobile, setMobile] = useState("");
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(20);
 
-  const { data, isLoading, isError, isFetching, refetch } = useComplaints({ as, page, limit, status });
+  const { data, isLoading, isError, isFetching, refetch } = useComplaints({
+    as,
+    page,
+    limit,
+    status,
+    from,
+    to,
+    mobile,
+    operator_id: operatorId,
+  });
+  const { operatorOptions, isLoading: optionsLoading } = useOperatorCircleOptions();
   const copy = COPY[as];
   const columns = useMemo(() => (as === "seller" ? [baseColumns[0], buyerColumn, ...baseColumns.slice(1)] : baseColumns), [as]);
   const rows = useMemo(() => data?.data ?? [], [data]);
@@ -150,6 +168,24 @@ export function ComplaintsView({ as, title = "Complain" }: { as: ComplaintParams
     }
     return { hold, refund };
   }, [rows]);
+
+  // Filter badle toh page 1 par wapas
+  const withReset =
+    <T,>(set: (v: T) => void) =>
+    (v: T) => {
+      set(v);
+      setPage(1);
+    };
+
+  const reset = () => {
+    setFrom(monthStart());
+    setTo(today());
+    setStatus("");
+    setOperatorId("");
+    setMobileDraft("");
+    setMobile("");
+    setPage(1);
+  };
 
   return (
     <div className="space-y-6">
@@ -172,33 +208,53 @@ export function ComplaintsView({ as, title = "Complain" }: { as: ComplaintParams
       </div>
 
       <section className="rounded-3xl border border-slate-200 bg-white dark:border-white/10 dark:bg-slate-900">
-        <div className="flex flex-wrap items-end gap-3 border-b border-slate-100 px-5 py-4 dark:border-white/10">
+        <form
+          className="flex flex-wrap items-end gap-3 border-b border-slate-100 px-5 py-4 dark:border-white/10"
+          onSubmit={(e) => {
+            e.preventDefault();
+            setMobile(mobileDraft.trim());
+            setPage(1);
+          }}
+        >
+          <Field label="From">
+            <input type="date" className={fieldCls} value={from} max={to} onChange={(e) => withReset(setFrom)(e.target.value)} />
+          </Field>
+          <Field label="To">
+            <input type="date" className={fieldCls} value={to} min={from} max={today()} onChange={(e) => withReset(setTo)(e.target.value)} />
+          </Field>
           <Field label="Status">
-            <select
-              className={fieldCls}
-              value={status}
-              onChange={(e) => {
-                setStatus(e.target.value);
-                setPage(1);
-              }}
-            >
+            <select className={fieldCls} value={status} onChange={(e) => withReset(setStatus)(e.target.value)}>
               <option value="">All Status</option>
               {STATUSES.map((s) => (
                 <option key={s} value={s}>{s}</option>
               ))}
             </select>
           </Field>
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() => {
-              setStatus("");
-              setPage(1);
-            }}
-          >
+          <Field label="Operator">
+            <select className={fieldCls} value={operatorId} disabled={optionsLoading} onChange={(e) => withReset(setOperatorId)(e.target.value)}>
+              <option value="">{optionsLoading ? "Loading..." : "All Operators"}</option>
+              {operatorOptions.map((o) => (
+                <option key={o.id} value={o.id}>{o.name}</option>
+              ))}
+            </select>
+          </Field>
+          <Field label="Mobile">
+            <input
+              className={fieldCls}
+              inputMode="numeric"
+              maxLength={10}
+              placeholder="10 digit mobile"
+              value={mobileDraft}
+              onChange={(e) => setMobileDraft(e.target.value.replace(/\D/g, ""))}
+            />
+          </Field>
+          <Button type="submit">
+            <Search className="size-4" /> Search
+          </Button>
+          <Button type="button" variant="outline" onClick={reset}>
             <RotateCcw className="size-4" /> Reset
           </Button>
-        </div>
+        </form>
 
         <div className={cn("p-1 transition-opacity", isFetching && !isLoading && "opacity-60")}>
           {isLoading ? (

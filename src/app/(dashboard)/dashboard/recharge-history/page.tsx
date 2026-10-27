@@ -23,6 +23,7 @@ import {
 import { ComplaintModal } from "@/components/reports/complaint-modal";
 import { cn } from "@/lib/utils";
 import { useBuyerRecharges } from "@/hooks/useHistory";
+import { useOperatorCircleOptions } from "@/hooks/useAvailableStock";
 import type { BuyerRecharge } from "@/services/history.service";
 
 const helper = createColumnHelper<BuyerRecharge>();
@@ -118,6 +119,8 @@ export default function RechargeHistoryPage() {
   const [from, setFrom] = useState(monthStart);
   const [to, setTo] = useState(today);
   const [status, setStatus] = useState("");
+  const [operatorId, setOperatorId] = useState("");
+  const [circleId, setCircleId] = useState("");
   const [mobileDraft, setMobileDraft] = useState("");
   const [mobile, setMobile] = useState("");
   const [page, setPage] = useState(1);
@@ -125,7 +128,17 @@ export default function RechargeHistoryPage() {
   const [complainFor, setComplainFor] = useState<BuyerRecharge | null>(null);
   const columns = useMemo(() => buildColumns(setComplainFor), []);
 
-  const { data, isLoading, isError, isFetching, refetch } = useBuyerRecharges({ page, limit, status, from, to, mobile });
+  const { data, isLoading, isError, isFetching, refetch } = useBuyerRecharges({
+    page,
+    limit,
+    status,
+    from,
+    to,
+    mobile,
+    operator_id: operatorId,
+    circle_id: circleId,
+  });
+  const { operatorOptions, circleOptions, isLoading: optionsLoading } = useOperatorCircleOptions();
   const rows = useMemo(() => data?.data ?? [], [data]);
   const total = data?.total ?? 0;
 
@@ -153,6 +166,8 @@ export default function RechargeHistoryPage() {
     setFrom(monthStart());
     setTo(today());
     setStatus("");
+    setOperatorId("");
+    setCircleId("");
     setMobileDraft("");
     setMobile("");
     setPage(1);
@@ -193,6 +208,22 @@ export default function RechargeHistoryPage() {
               <option value="">All Status</option>
               {STATUSES.map((s) => (
                 <option key={s} value={s}>{s}</option>
+              ))}
+            </select>
+          </Field>
+          <Field label="Operator">
+            <select className={fieldCls} value={operatorId} disabled={optionsLoading} onChange={(e) => withReset(setOperatorId)(e.target.value)}>
+              <option value="">{optionsLoading ? "Loading..." : "All Operators"}</option>
+              {operatorOptions.map((o) => (
+                <option key={o.id} value={o.id}>{o.name}</option>
+              ))}
+            </select>
+          </Field>
+          <Field label="Circle">
+            <select className={fieldCls} value={circleId} disabled={optionsLoading} onChange={(e) => withReset(setCircleId)(e.target.value)}>
+              <option value="">{optionsLoading ? "Loading..." : "All Circles"}</option>
+              {circleOptions.map((c) => (
+                <option key={c.id} value={c.id}>{c.name}</option>
               ))}
             </select>
           </Field>

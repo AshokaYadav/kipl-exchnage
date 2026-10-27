@@ -37,6 +37,8 @@ export type BuyerRechargeParams = {
   from?: string;
   to?: string;
   mobile?: string;
+  operator_id?: string;
+  circle_id?: string;
 };
 
 // ───────────── Buyer daybook ─────────────

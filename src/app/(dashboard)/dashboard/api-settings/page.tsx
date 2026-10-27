@@ -108,6 +108,10 @@ function TokensSection() {
           </span>
         ),
       }),
+      tokenHelper.accessor("ip", {
+        header: "IP",
+        cell: (i) => <span className="font-mono text-xs">{i.getValue() || "—"}</span>,
+      }),
       tokenHelper.accessor("status", {
         header: "Status",
         // Click par ACTIVE ↔ INACTIVE
@@ -141,17 +145,17 @@ function TokensSection() {
           );
         },
       }),
-      tokenHelper.accessor("last_used_at", {
-        header: "Last Used",
-        cell: (i) => (
-          <div className="text-xs">
-            <div>{formatDate(i.getValue())}</div>
-            {i.row.original.last_used_ip && (
-              <div className="text-slate-500 dark:text-slate-400">{i.row.original.last_used_ip}</div>
-            )}
-          </div>
-        ),
-      }),
+      // tokenHelper.accessor("last_used_at", {
+      //   header: "Last Used",
+      //   cell: (i) => (
+      //     <div className="text-xs">
+      //       <div>{formatDate(i.getValue())}</div>
+      //       {i.row.original.last_used_ip && (
+      //         <div className="text-slate-500 dark:text-slate-400">{i.row.original.last_used_ip}</div>
+      //       )}
+      //     </div>
+      //   ),
+      // }),
       tokenHelper.accessor("createdAt", { header: "Created", cell: (i) => formatDate(i.getValue()) }),
       tokenHelper.display({
         id: "actions",
@@ -224,15 +228,16 @@ function TokensSection() {
 function TokenFormModal({ token, onClose }: { token: ApiToken | null; onClose: () => void }) {
   const [name, setName] = useState(token?.name ?? "");
   const [callbackUrl, setCallbackUrl] = useState(token?.callback_url ?? "");
+  const [ip, setIp] = useState(token?.ip ?? "");
   const save = useSaveApiToken(onClose);
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
     if (token) {
-      save.mutate({ id: token.id, input: { callback_url: callbackUrl.trim() } });
+      save.mutate({ id: token.id, input: { callback_url: callbackUrl.trim(), ip: ip.trim() } });
     } else {
       if (!name.trim()) return toast.error("Token ka naam daalo");
-      save.mutate({ input: { name: name.trim(), callback_url: callbackUrl.trim() } });
+      save.mutate({ input: { name: name.trim(), callback_url: callbackUrl.trim(), ip: ip.trim() } });
     }
   };
 
@@ -266,6 +271,14 @@ function TokenFormModal({ token, onClose }: { token: ApiToken | null; onClose: (
             onChange={(e) => setCallbackUrl(e.target.value)}
             placeholder="https://example.com/recharge-callback"
             hint="Recharge ka final status is URL par bheja jaayega"
+          />
+          <Input
+            label="IP Address"
+            name="ip"
+            value={ip}
+            onChange={(e) => setIp(e.target.value)}
+            placeholder="e.g. 103.25.12.45"
+            hint="Server ka IP jahan se API call hogi"
           />
         </div>
         <div className="flex justify-end gap-2 border-t border-slate-100 px-5 py-4 dark:border-white/10">

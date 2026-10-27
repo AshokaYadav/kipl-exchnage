@@ -37,6 +37,10 @@ export type ComplaintParams = {
   page?: number;
   limit?: number;
   status?: string;
+  from?: string;
+  to?: string;
+  mobile?: string;
+  operator_id?: string;
 };
 
 function unwrap<T>(body: ApiResponse<T>): T {

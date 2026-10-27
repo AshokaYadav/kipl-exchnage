@@ -11,7 +11,7 @@ export default function DownloadBuyerReportPage() {
       fileName="purchase-report"
       singleDate
       select={{ key: "status", label: "Status", options: ["SUCCESS", "FAILED", "PENDING"] }}
-      text={{ key: "mobile", label: "Mobile", placeholder: "9876543210" }}
+      // text={{ key: "mobile", label: "Mobile", placeholder: "9876543210" }}
     />
   );
 }

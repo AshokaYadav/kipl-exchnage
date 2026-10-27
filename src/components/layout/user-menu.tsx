@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { ChevronDown, LogOut, PanelLeft, PanelTop, UserCircle } from "lucide-react";
+import { Briefcase, ChevronDown, LogOut, PanelLeft, PanelTop, UserCircle } from "lucide-react";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import Link from "next/link";
 import { useLogout } from "@/hooks/useAuth";
@@ -77,6 +77,9 @@ export function UserMenu({ user }: { user: AppUser | null }) {
         <div className="absolute right-0 z-50 mt-2 w-52 rounded-2xl border border-slate-200 bg-white p-1.5 shadow-xl dark:border-white/10 dark:bg-slate-900">
           <Link href="/dashboard/personal-details" onClick={() => setOpen(false)} className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm hover:bg-slate-100 dark:hover:bg-white/10">
             <UserCircle className="size-4" /> My Profile
+          </Link>
+          <Link href="/dashboard/company-details" onClick={() => setOpen(false)} className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm hover:bg-slate-100 dark:hover:bg-white/10">
+            <Briefcase className="size-4" /> Company Details
           </Link>
           <button onClick={logout} className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-500/10">
             <LogOut className="size-4" /> Logout

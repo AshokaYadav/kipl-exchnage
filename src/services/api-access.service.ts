@@ -11,6 +11,7 @@ export type ApiToken = {
   name: string;
   token: string;
   callback_url: string | null;
+  ip: string | null;
   status: TokenStatus;
   last_used_at: string | null;
   last_used_ip: string | null;
@@ -21,6 +22,7 @@ export type ApiToken = {
 export type ApiTokenInput = {
   name?: string;
   callback_url?: string;
+  ip?: string;
   status?: TokenStatus;
 };
 
@@ -60,7 +62,7 @@ export const createApiToken = async (input: ApiTokenInput) => {
   return unwrap<ApiToken>(res.data);
 };
 
-// ✏️ Token update (callback_url / status)
+// ✏️ Token update (callback_url / ip / status)
 export const updateApiToken = async (id: string, input: ApiTokenInput) => {
   const res = await axiosInstance.put(`/api-access/tokens/${id}`, input);
   return unwrap<ApiToken>(res.data);

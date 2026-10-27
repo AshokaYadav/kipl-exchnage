@@ -11,7 +11,7 @@ export default function DownloadSellerReportPage() {
       fileName="resales-report"
       singleDate
       select={{ key: "status", label: "Status", options: ["SUCCESS", "FAILED", "PENDING"] }}
-      text={{ key: "operator_id", label: "Operator ID", placeholder: "Operator ID" }}
+      // text={{ key: "operator_id", label: "Operator ID", placeholder: "Operator ID" }}
     />
   );
 }

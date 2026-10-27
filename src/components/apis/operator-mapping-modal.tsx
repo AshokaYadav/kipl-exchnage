@@ -159,9 +159,9 @@ export function OperatorMappingModal({ api, onClose }: { api: ProviderApi; onClo
                   <tr className="border-b border-slate-200 text-left text-xs uppercase tracking-wide text-slate-500 dark:border-white/10 dark:text-slate-400">
                     <th className="px-4 py-3 font-semibold">Operator</th>
                     <th className="w-40 px-4 py-3 font-semibold">Operator Code</th>
-                    <th className="w-40 px-4 py-3 font-semibold">Circle Code</th>
+                    {/* <th className="w-40 px-4 py-3 font-semibold">Circle Code</th>
                     <th className="w-32 px-4 py-3 font-semibold">Margin</th>
-                    <th className="w-72 px-4 py-3 font-semibold">Margin Type & Mode</th>
+                    <th className="w-72 px-4 py-3 font-semibold">Margin Type & Mode</th> */}
                     <th className="w-24 px-4 py-3 font-semibold">Status</th>
                     <th className="w-28 px-4 py-3 font-semibold">Action</th>
                   </tr>
@@ -190,18 +190,18 @@ export function OperatorMappingModal({ api, onClose }: { api: ProviderApi; onClo
                         <td className="px-4 py-3">
                           <input className={cellInput} value={row.operator_code ?? ""} placeholder="e.g. OP01" onChange={set(row, "operator_code")} />
                         </td>
-                        <td className="px-4 py-3">
+                        {/* <td className="px-4 py-3">
                           <input className={cellInput} value={row.circle_code ?? ""} placeholder="e.g. CR01" onChange={set(row, "circle_code")} />
                         </td>
                         <td className="px-4 py-3">
                           <input className={cellInput} value={row.margin ?? ""} placeholder="0.00" inputMode="decimal" onChange={set(row, "margin")} />
-                        </td>
-                        <td className="px-4 py-3">
+                        </td> */}
+                        {/* <td className="px-4 py-3">
                           <select className={cellInput} value={row.margin_type} onChange={set(row, "margin_type")}>
                             <option value="percentage">Percentage</option>
                             <option value="flat">Flat</option>
                           </select>
-                          {/* Mode badalte hi row save ho jaati hai (purane modal jaisa) */}
+                   
                           <div className="mt-2 flex gap-4 text-xs font-medium text-slate-600 dark:text-slate-300">
                             {([true, false] as const).map((value) => (
                               <label key={String(value)} className="flex cursor-pointer select-none items-center gap-1.5">
@@ -220,7 +220,7 @@ export function OperatorMappingModal({ api, onClose }: { api: ProviderApi; onClo
                               </label>
                             ))}
                           </div>
-                        </td>
+                        </td> */}
                         <td className="px-4 py-3">
                           {row.provider_api?.status ? (
                             <span className="rounded-md bg-emerald-50 px-2 py-0.5 text-xs font-semibold text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-300">Active</span>

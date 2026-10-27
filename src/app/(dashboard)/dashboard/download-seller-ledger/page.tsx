@@ -10,6 +10,7 @@ export default function DownloadSellerLedgerPage() {
       subtitle="ReSales (seller) ledger ki CSV download karo"
       fileName="resales-ledger"
       singleDate
+      select={{ key: "status", label: "Status", options: ["SUCCESS", "FAILED", "PENDING"] }}
     />
   );
 }
